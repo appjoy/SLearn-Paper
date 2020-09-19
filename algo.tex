@@ -1,0 +1,74 @@
+\begin{center}
+\begin{figure}[htp!]
+	\begin{small}
+  \centering
+  \begin{minipage}{1\textwidth}
+    {
+\captionsetup[algorithm]{font=footnotesize}
+\noindent\fbox{%
+\begin{varwidth}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}
+%%\begin{algorithm} %issue is with use of algorithm package. It is conflicting with floatrow also
+%%\caption{Algo}
+{\small
+\begin{algorithmic}[1]
+\Procedure{GetCurrentSamplingPercentage}{}
+  %\For{q in Q}
+  %\EndFor
+  \If {First $T$ jobs}
+  \State \Return 3
+  \ElsIf {Second $T$ jobs}
+  \State \Return 2
+  \ElsIf{Third $T$ jobs}
+  \State \Return 4
+  \EndIf
+  %\Else
+  \State minScoreSP = getMinValueKey(avgScoreMap)
+  \State minScore = getMinValue(avgScoreMap)
+  \If {minScoreSP > 1}
+    \If {avgScoreMap[minScoreSP - 1] < 1.1*minScore}
+	\State \Return minScoreSP - 1
+    \EndIf
+  \EndIf
+  \If {minScoreSP < 5}
+    \If {avgScoreMap[minScoreSP + 1] < 1.1*minScore}
+	\State \Return minScoreSP + 1
+    \EndIf
+  \EndIf
+\EndProcedure
+\Procedure {UpdateStatsOnJobCompletion}{Job j}
+  \State sp = j.sp  \Comment{Get j's sampling percentage.}
+  \State nrmlzdJct = j.jct  \Comment{Get j's normalized JCT.}
+  \State UpdateScoresMap(sp, nrmlzdJct)
+\EndProcedure
+\Procedure {UpdateScoresMap}{sp, nrmlzdJCT}
+  \State scoresMap[sp].append(nrmlzdJCT)
+  \State L = len(scoresMap[sp])
+    \If L>$T$ 
+      \State Drop first L-T elements of scoresMap[sp]
+    \EndIf
+  \State avgScoreMap[sp] = mean(scoresMap[sp])
+\EndProcedure
+\end{algorithmic}
+}
+\label{algo:AdaptiveSampling}
+%%\end{algorithm}
+\end{varwidth}%
+}
+}
+  \end{minipage}
+\vspace{0.1in}
+  \caption{Adaptive sampling algorithm in \name.}
+  \label{fig:design:AdaptiveSamplingAlgo}
+\end{small}
+\end{figure}
+\end{center}
+
+\textbf{Objective:} Calculate sampling percentage that is expected to yeild
+best in runtime and prediction accuracy tradeoff in the current system
+conditions.
+\textbf{Defination of variables and abbreviations} in pseudocode in
+fig.~\ref{fig:design:AdaptiveSamplingAlgo}: \textbf{$T$} - Maximum number of
+past jobs to keep in record corresponding to any sampling percentage.
+\textbf{$SP$ or $sp$} - this is an abbreviation to denote sampling percentage. 
+\textbf{Output:} \textit{sp}, \ie the best sampling percentage to be used at
+this instance.

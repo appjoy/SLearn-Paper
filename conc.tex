@@ -1,0 +1,22 @@
+\section{Conclusions}
+\label{sec:conc}
+
+The ability to accurately estimate job runtime properties allows a cluster job
+scheduler to effectively schedule jobs.  In this paper, we performed a
+comparative study of task-sampling-based prediction and history-based
+prediction commonly used in the current cluster job schedulers. Our study
+answers two key questions: (1) Via quantitative, trace and experimental
+analysis, we demonstrate that the task-sampling-based approach can predict job
+runtime properties with much higher accuracy than history-based schemes.  (2)
+Via extensive simulations and testbed experiments on a 150-node cluster in
+Microsoft Azure of a generic cluster job scheduler, we show delaying
+non-sampled tasks till completion of sampled tasks in sampling-based learning
+can be more than compensated by the improved accuracy over the prior-art
+history-based predictor, and as a result reduces the average JCT, by
+1.44$\times$ and 1.40$\times$, for two production cluster traces.
+These results suggest task-sampling-based prediction offers a 
+promising alternative to the history-based prediction in facilitating cluster
+job scheduling. 
+
+%  \deadlineCS{We also found that sampling and history based
+%  approaches have similar accuracy when it comes to predicting the maximum task length.}

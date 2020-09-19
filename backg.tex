@@ -1,0 +1,214 @@
+\section{Challenges in Scheduling Big-Data Jobs}
+\label{sec:back}
+ 
+\subsection{Background}
+\label{subsec:back}
+ 
+Clusters are being shared among multiple users to execute diverse
+jobs that arrive online. 
+%Such jobs typically arrive online and compete for shared resources. 
+In order to best utilize the cluster and to ensure that
+jobs also meet their service level objectives (SLOs), efficient job
+scheduling is essential. Since jobs arrive online, their runtime
+properties, such as task running-times, network flow sizes, 
+memory and disk IO requirements,
+%or \emph{runtime} for short,
+%characteristics 
+are unknown \emph{a priori}. This lack of information 
+%about job runtime properties 
+poses a fundamental challenge to the scheduler in trying to determine
+the right order of job execution that would meet application SLOs
+%service level objectives (SLOs) 
+and/or maximize the utilization of shared hardware resources.
+ 
+\subsection{Problem Statement}
+ 
+\paragraph*{Job Model.}
+Formally, we consider typical big-data jobs in a shared cluster (either
+private or public), where each big-data job processes a large amount of
+data. Each job partitions the data into manageable chunks and runs many
+parallel tasks (which we refer to as \emph{compute tasks}), one for processing each data chunk. 
+%to achieve
+%specific SLO such as minimizing the completion time or meeting some
+%deadline. 
+Compute tasks may also exchange intermediate results, which we refer to as
+\emph{network tasks}. 
+%
+Examples of such big-data jobs may involve a single phase of parallel
+compute tasks (e.g., in the mapper stage of MapReduce) or network tasks
+(also known as the co-flow
+problem~\cite{coflow:hotnets12,aalo:sigcomm2015,
+varys:sigcomm14,baraat:sigcomm14, graviton:hotcloud16,
+jajooSaath,jajoo:atc2019}), or multiple phases of compute and network
+tasks with dependency modeled by
+directed acyclic graphs (DAGs)~\cite{mapreduceonline:nsdi2010,
+apache:tez, dryad:eurosys2007, dandelion:sosp2013}.
+
+In developing various approaches to big-data job scheduling in this
+proposal, we first focus on a single phase of parallel tasks. Our
+job model of a single phase of parallel tasks is similar to that of
+~\cite{borg,perforator:socc2016,IfYouAreLateDontBlameUs:socc14} and
+forms the building block for generalized job scheduling strategies
+that schedule multi-phase (DAG) jobs (see  Task~6).
+ 
+\paragraph*{Scheduling Objectives.}
+Different jobs can have different application SLOs. For some jobs meeting
+deadlines is more important while for others faster job completion
+time or minimizing the use of data center resources such as networks
+is more important. Such a diverse set of objectives pose further
+challenges in scheduling big data-jobs in shared
+clusters~\cite{drf:nsdi11,jockey:eurosys2012, shufflewatcher, corral,
+  morpheus, delay:eurosys10, cdef:atc18}.
+ 
+\subsection{Prior-Art}
+\label{subsec:prior}
+ 
+\paragraph*{History-based Learning.}
+An effective way to tackle the challenges of cluster scheduling is to
+learn and estimate runtime characteristics of pending
+jobs. Intuitively, if we can accurately estimate jobs characteristics,
+we can leverage offline 
+scheduling algorithms for minimizing the average completion time, e.g.,
+SJF (shortest-job-first) is known to optimal for certain settings.
+ 
+The problem of learning runtime characteristics of jobs has been
+intensively studied. Cluster schedulers using various learning methods
+have been proposed~\cite{corral, morpheus, shufflewatcher, 3Sigma,
+  tetrisched, DontCryOverSpilledRecords, perforator:socc2016,
+  Apollo:osdi2014, wsmith:IEEE98, stratus:socc2018,
+  roughSetEstimation:IEEE:Shonali}.  All previously proposed learning
+schemes, however, are history-based, i.e., they learn job characteristics by
+observations made from the past job executions. 
+%  In particular, existing history-based learning approaches can be broadly categorized
+% into the following groups, 
+% as summarized in Table 1.
+
+\paragraph*{Limitations of History-based Learning.} Accurately predicting job runtime
+characteristics from history information relies on two conditions to
+hold: (1) Most of the jobs are recurring; (2) The performance of the
+same or similar jobs will remain consistent over time. In the
+following, we argue why these conditions may not be applicable to
+modern-day clusters.
+ 
+{\em Condition 1: Most of the jobs are recurring.}  Many previous work
+have acknowledged that not all jobs are recurring. For example, the
+traces used in Corral~\cite{corral} and Jockey~\cite{jockey:eurosys2012} show that only 40\% of the jobs are
+recurring and Morpheus~\cite{morpheus} shows that 60\% jobs are
+recurring.
+
+{\em Condition 2: The performance of the same or similar job will remain
+consistent over time.}
+Previous works~\cite{3Sigma, morpheus, corral, jockey:eurosys2012} that exploited
+history-based prediction have considered jobs in one of
+the following two categories.
+%\begin{itemize}
+(1) {\em Recurring jobs}: A job is re-scheduled to run on newly arriving data;
+(2) {\em Similar jobs:} A job has not been seen before but has some
+attributes in common with some jobs executed in the past. The
+attributes can be application name, job name, user of
+the job, or amount of resources requested by the job.
+%\end{itemize}
+Many of the history-based approaches only predict for recurring jobs \cite{morpheus, corral,
+jockey:eurosys2012}, while some others \cite{3Sigma, jamiasvu, stratus:socc2018, roughSetEstimation:IEEE:Shonali} work for both categories of jobs.
+%
+However, \emph{even the authors of history-based prediction schemes such as
+3Sigma~\cite{3Sigma} and Morpheus~\cite{morpheus} strongly argued why
+runtime properties of jobs, even with the same input, will not remain consistent
+and will keep evolving.}  The primary reason is that updates in cluster
+hardware, application software, and user scripts to execute the jobs
+all affect the job runtime characteristics.
+{They found that}
+in a large Microsoft production cluster, within a one-month period,
+applications corresponding to more than 50\% of the recurring jobs were
+updated. The source code changed by at least 10\% for applications
+corresponding to 15-20\% of the jobs.  Additionally, over a one-year period,
+the proportion of two different types of machines in the cluster
+changed from 80/20 to 55/45. For a same production Spark job, there is
+a 40\% difference between the running times observed on the two types of
+machines~\cite{morpheus}. 
+%\linx{Does Spark mean streaming jobs? I think
+%our approach does not apply for streaming jobs.}
+
+For these reasons, although the state-of-the-art job scheduling system 3Sigma~\cite{3Sigma} 
+uses sophisticated history-based prediction techniques,
+% Machine Learningd also shown that
+the predicted running times for more than 23\% of the jobs have at
+least 100\% error, and for many the prediction is off by an order of
+magnitude. In our experiments with production cluster traces (see
+Fig.~\ref{fig:sim:estimationAccuracy:2STrace}), we observed similar
+levels of high variability in the runtime characteristics of the jobs with the same
+attributes.
+
+%\linx{How about adding a paragraph for "Non-Learning Based Approaches".
+\paragraph*{Non-learning-based approach.}
+Using priority queues to adaptively adjust the priority of a
+distributed job based on how long it has run
+(which is related to age-based
+scheduling policies such as Least Attained Service~\cite{scully2018soap,raiLAS:sigmetrics2003})
+% and the principle of Least Attained Service~\cite{raiLAS:sigmetrics2003}. 
+has been explored for both network tasks
+(i.e., coflow scheduling)~\cite{aalo:sigcomm2015,graviton:hotcloud16,jajooSaath} and
+compute tasks~\cite{kairos:socc2018}.
+While these
+approaches also adapt to real-time feedback, they do not aim to
+explicitly learn job characteristics from completed tasks, and thus are
+fundamentally different from the online learning approach that we
+propose below.  As a result, they adapt more slowly and tend to
+degrade to round-robin scheduling when jobs are of similar
+sizes~\cite{jajoo:atc2019}.
+
+%% 2.3.2 Scheduling without online learning
+ 
+%\linx{I can write a paragraph here to introduce the key new concept of online learning.}
+ 
+
+
+
+
+\if 0
+
+\paragraph*{Scheduling Objectives.}
+
+%\newline 
+
+\linx{The following paragraph may goes to the end of ``background section''}
+
+\paragraph*{Online Learning:} In this project, we propose a new
+online-learning based approach to the scheduling and optimization of
+big-data clusters. In a typical online learning problem (such as
+multi-armed bandit \cite{MAB}), the controller faces significant
+uncertainty in key parameters of the problem (such as the expected
+payoff of each arm). Thus, the controller must use feedback from past
+control decisions to learn, and gradually refine, the knowledge of these
+parameters, while making control decisions that utilize the learned
+knowledge at the same time. This integration of learning and control is
+a natural fit for big-data cluster scheduling: since the multiple
+compute and network tasks of a job often share similar characteristics, 
+the feedback from
+completed tasks can be used to learn the underlying
+features of the entire job, which can then be used to make more informed
+scheduling decisions. In Section~\ref{}, we will present 
+preliminary evidence demonstrating that this new concept can
+lead to significant performance gains over
+existing approaches. 
+%history-based appraoches and approaches without learning. 
+However, as we will elaborate in the rest of the proposal, existing
+theoretical results and algorithms on online learning often cannot be
+directly applied here.
+First, existing online learning problems usually focus on
+payoff-maximization \cite{MAB}, while we care about computer-system objectives such
+as completion time and throughput. This difference in control objectives
+has a direct impact on what are the most important parameters to learn,
+how to learn them, and how to utilize the learned parameters at
+different confidence levels. Thus, both the learning and control
+component must be carefully redesigned in an integrated manner. 
+Second, existing online learning problems often focus on a snapshot
+problem with a fixed set of agents and choices \cite{snapshot}, while in
+a cluster jobs keep arriving and departing. This calls for the
+integration of online
+learning with stochastic control, which also presents significant new
+difficulty. 
+%only received few attention in the literature. 
+
+
+\fi

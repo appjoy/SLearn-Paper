@@ -1,0 +1,70 @@
+\section*{Abstract}
+The ability to accurately estimate job runtime properties allows a
+scheduler to effectively schedule jobs.
+State-of-the-art online cluster job schedulers use history-based
+learning which uses past job
+execution information to estimate the runtime properties of newly arriving 
+jobs. However, with fast-paced development in cluster technology (in both
+hardware and software) and changing user inputs, job runtime properties
+can change over time, which lead to inaccurate predictions.
+
+In this paper, we explore the potential and limitation of real-time learning of
+job runtime properties, by proactively sampling and scheduling a small fraction
+of tasks of each job. Such a task-sampling-based approach exploits the
+similarity among runtime properties of the tasks of the same job and is
+immune to changing job behavior.
+Our study focuses on two key questions in comparing 
+{task-sampling-based learning (\textit{learning in space})} and
+history-based learning {\textit{(learning in time)}}:
+(1) Can {learning in space} be more accurate than learning in time?
+(2) Can {delaying scheduling} the remaining
+% please do not change this again
+tasks of a job till the completion of sampled tasks hurt the job performance,
+\eg job completion time?
+
+Our analytical and experimental analysis of \numTraces production traces with
+different skew and job distribution shows that learning in space can be
+substantially more accurate.  Our simulation and testbed evaluation on Azure of
+the two approaches anchored in a generic job scheduler using \numTraces
+production cluster job traces shows that despite its online overhead, learning
+in space reduces the average Job Completion Time (JCT) by 1.28$\times$,
+1.56$\times$, and 1.32$\times$ compared to the prior-art history-based
+predictor and 1.91$\times$, 1.65$\times$ and, 1.72$\times$ compared to the
+least-attained-service (LAS) scheduling policy.
+
+%   First, we analyticaly model the conditions under which either approach
+%   will result in higher prediction accuracy.  Second, we experimentally
+%   analyze two cluster traces which shows higher predicitability of task
+%   sampling.  Finally, we present the complete design of \name, a
+%   \editaj{cluster scheduler}{predictor} that uses task-sampling to learn
+%   job runtime properties in real time and then resorts to Shortest Job
+%   First scheduling.
+%Our simulation and testbed evaluation on Azure using two diverse
+%traces show that \name reduces the average Job Completion Time (JCT)
+%by 66\% (p90 of 88\%) compared to using the prior-art history-based
+%predictor \primarybase. \name trials behind scheduling using the
+%perfect oracle predictor by only around 10\%.
+%\addajbcoz{\ie learning by sampling,}{otherwise the apperance of phrase
+%"learning in space" looks abrupt here.}
+%\name trials behind scheduling using the
+%perfect oracle predictor by only around 25\%. \comment{too high??\\
+%aj: yes. I wanted to discuss oracles design. The design which can give the fair comparison.}
+
+\if 0
+In this paper, we propose \lTechnique, a novel approach for predicting runtime
+characterstics of distributed jobs.  We also provide quantitative and
+experimental analysis using 2 cluster traces as well as provide qualitative
+analysis demonstrating high predicitability of the new approach.  Finally, we
+provide design of \name, a \lTechnique based online learning module, for job
+runtime prediction with very high accuracy (P50 error = 15\%).
+%\name exploits the spatial dimension of distributed jobs, \ie a job has many
+%tasks, to estimate job runtimes 
+\name pre-schedules sampled tasks of each job and uses their runtimes to
+estimate the average task runtime for the job.  It then resorts to Shortest Job
+First. Our evaluation using an Azure testbed and simulations of a publicly
+available production cluster trace from Google (and a private trace from
+2Sigma) shows that by using \name, the average Job completion time (JCT)
+reduces by 66\% (88\%) as compared to when using the prior art history based
+predictor \primarybase. \name shows only around 10\% slow down on both the
+traces against the perfect oracle predictor.
+\fi

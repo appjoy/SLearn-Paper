@@ -1,0 +1,106 @@
+\section{Introduction}
+\label{sec:intro}
+
+\commentaj{This section is written assuming that paper's key point was around
+the scheduler. It needs to be updated according to the new outline.}
+
+
+Use of shared clusters is increasing and clusters have to support diverse set
+of activities like including but not limited to data analytics, consumer
+services and development services. This is increasing challange for cluster
+schedulers to effciently pack jobs and make best use of available resources.
+
+Works like \cite{tetrisched, morpheus, 3Sigma,
+Socc14:IfYouAreLateDon'tBlameUs} have shown that having prior knowledge of job
+runtimes can help cluster schedulers in making better and more robust
+scheduling decisions. However, in most cases runtime estimates are derived
+using some form of runtime history of similar jobs. Where notion of similarity
+could be based on one or more of the following, job executed by same user, jobs
+of same application, jobs demanding similar resource or jobs executed at
+similar point in time cycle etc \cite{jamiasvu, 3Sigma}. 
+
+\questionaj{Here, I also want to state that using task runtimes is a
+better idea as compared to job runtimes. Because job runtime is difference
+between endtime of last task and starting time of first task which also depends
+on extent of parallel resource available. However, average task runtime is
+independent of that. What do you think?}
+
+If the estimates are accurate scheduler using such prediction mechanism will
+provide better results than schedulers those are not. However, using two
+production cluster traces we observed that runtimes are long tailed
+\todoaj{plot cdf of average runtime figure.} and average task length based on several
+classifying features used in \cite{3Sigma} and \cite{jamiasvu} show high degree
+of variability \todoaj{plot figures of cov in avg task runtime for features for
+the traces.}. Also as shown in \cite{3Sigma} that state-of-the-art job runtime
+predictors can have more than 50\% estimation error for 23\% of jobs and in
+some cases more than 20\% jobs have extremely high error \questionaj{in 3 sigma
+they have show this as tail error and have not written exact numbers, I am not
+sure how to write this better.}
+
+\questionaj{how to write here smoothly about job runtimes and average task
+length. Values in previous papers are about job runtimes and we should show
+average task runtime as we are using average task runtime everywhere. Please
+advise.}
+
+Another limitation of using history based predictor is that history gets
+outdated due to various reasons like software updates, hardware updates, change
+in user demand pattern and number of users.
+
+To overcome the above mentioned challenges In this paper, we propose
+\namepredict, a dramatically different approach for online runtime  prediction
+for distributed jobs.  And we present \name a complete cluster scheduler which
+approximates SJF using \namepredict as it's primary source of runtime
+estimates.  For optimal scheduling using SJF in cluster scheduling, it is vital
+to learn the task runtimes quickly and accurately. \namepredict achieves this
+objective by exploiting the \textit{spatial dimension} of distributed jobs, \ie
+a jobs typically consists of many tasks, and by using \textit{sampling}, a
+highly effective technique used in large-scale
+surveys~\cite{samplingOfPopulations}.  In particular, \namepredict
+pre-schedules sampled tasks, called {\em pilot tasks}, of each jobs and uses
+their measured runtimes to estimate the average task runtime or job runtime. It
+then resorts to SJF using the estimated job runtime.
+
+Scheduling pilot tasks first before the rest of the tasks can potentially incur
+two overheads.  First, scheduling pilot tasks of a newly arriving job consumes
+resources which can delay other jobs (with already estimated runtimes). To
+tackle this \name creates separate logical partitions of cluster and
+prioritizes scheduling of tasks of job whose runtime has been estimated on one
+and prioritizes scheduling on sampling tasks on other. Size of these partitions
+are dynamically adjusted based on queue length. 
+
+Second, scheduling pilot tasks first may elongate the JCT of the newly
+arriving job itself whose other tasks cannot start until the pilot
+tasks finish. This is again typically insignificant for following reason:
+job scheduling is of high relevance in a busy
+cluster (when there is a backlog of jobs in the system), in which
+case the JCT of job is expected to be much higher than if it were
+the only job in the system, and hence the piloting overhead is
+further dwarfed by a job's actual JCT.
+
+We present the complete \name design that addresses two major design issues:
+%(1) How to schedule the pilot tasks?
+(1) How to integrate \namepredict with a cluster scheduler?
+(2) How to schedule among all the jobs with estimated runtimes?
+
+We have implemented and evaluated \name using a prototype on a 150-node cluster
+in Microsoft Azure, and large-scale simulations {utilizing a public cluster
+trace from Google and a private trace from 2Sigma cluster.  Our simulation
+results show that, compared to prior art 3Sigma, \name reduces the average JCT
+by 1.66$\times$ (1.88$\times$) for Google trace(2Sigma trace) We also evaluated
+\name on a testbed.  Our testbed evaluation shows that \name reduces the
+average job completion time by 60\% compared to 3Sigma.
+
+
+In summary, this paper makes the following contributions:
+\begin{itemize} %% [noitemsep,topsep=0pt,leftmargin=0.2in]
+\item Using two production cluster trace from Google and 2Sigma, we show that
+	history might not be a very good predictor for runtime characterstics of a distributed jobs. 
+\item We propose, \lTechnique, a novel learning approach for distributed jobs. \lTechnique uses sampling in the spatial dimension
+%\item We propose, \namepredict, the novel idea of applying sampling in the spatial dimension
+of job to learn job runtime propeties online with very high accuracy.
+\item We present the complete design and implementation of \name, a
+	\lTechnique based cluster scheduler whose primary goal is to minimize average JCT.
+\item We extensively evaluate \name via simulations and testbed experiments,
+	and show that compared to the prior art, the new design reduces the
+	average JCT by 1.66$\times$ (1.88$\times$) for the Google trace (2Sigma trace).
+\end{itemize}

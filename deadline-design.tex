@@ -1,0 +1,133 @@
+\paragraph{Learning for deadline jobs.}
+\label{sec:discuss:maxTaskLength}
+%
+In multi-tenant job clusters, different jobs may have different 
+SLOs. 
+% To evaluate the effectiveness of sampling on other types of scheduling goals, 
+We performed an initial study of the effectiveness of a sampling-based scheme
+% developed another scheduler \gsdl from \gs 
+% to minimize deadline misses. 
+to predict the max task length for use by a deadline scheduler
+to minimize deadline misses (\eg~\cite{jockey:eurosys2012}).
+In particular, we revised both \slearn and \primarybasepredict to 
+predict the maximum task length using
+the maximum observed task length from sampling and history respectively.
+%
+\if 0
+\gsdl's architecture is similar to that of \gs and differ in two ways:
+(1) The sampling-based predictor is tuned to predict
+the maximum task length, since for a job to finish within deadline, it is
+required that the longest task finishes within the deadline. 
+\comment{Accordingly, \slearn now estimates the maximum task length as the length
+of the longest running sampled task. Similarly, the history-based predictor
+estimates the maximum task length by ????
+} (2) \gsdl schedules jobs with estimated max task lengths by ???
+\fi
+%
+{
+Figure~\ref{fig:sim:estimationAccuracy-max} shows the CDF of
+estimation error of maximum task length (normalized by the true max
+task length) for the two traces. We see that for GTrace
+the mean prediction error is 31.17\% for
+\slearn but 116.51\% for \primarybasepredict
+though the errors are comparable for 2STrace.  One nice feature
+about \slearn is that its error is upper-bounded by 100\% while the
+error of \primarybasepredict can go unbounded.
+}
+%  is similar between \slearn and \primarybasepredict, and thus
+%  sampling appears to have no added benefit over history-based prediction 
+%  in predicting the max value of job properties.
+Motivated by 
+this preliminary result, and because deadline scheduling typically require both the
+max task length and the total resource requirement of the jobs~\cite{morpheus,3Sigma}
+%   Previous work has shown that tasks from the same stage have
+%  similar resource requirements~\cite{pacman:nsdi12, drf:nsdi11,
+%  paratimer:sigmod2010}.  
+and the later can be more accurately estimated by sampling, we plan to
+explore sampling-based prediction for deadline scheduling in our
+future work.
+
+\if 0
+As we can estimate the total resource
+requirement by estimating the average resource requirement by sampling
+a few tasks.\\ Our case study I (\S\ref{sec:study}) and analysis
+in \S\ref{sec:accuracy} have shown that sampling is significantly
+better than a history based approach for predicting an average of a
+property.
+\fi
+
+
+\if 0
+\deadlineCS{To evaluate the impact of sampling on another class of scheduling
+goals like SLO misses, we did another study. We deriverd another scheduler
+\gsdl from \gs. \gsdl's architecture is same as \gs and we also kept the
+default settings same. \gsdl differs \gs only in following two ways: (1)
+\textbf{No multiple priority queue in \gsdl}: Unlike \gs, \gsdl doesn't need a
+starvation freedom mechanism, as the jobs which miss deadline are dropped.
+Hence all the jobs are kept in a single queue called as main queue.  However,
+other than the main queue \slearn uses two more queues, one for sampling and
+another for thin jobs.  (2) Jobs in the main queue are sorted on the basis of
+the $slack$ a job has from its deadline, where $slack = deadline - (arrivalTime
++ estimatedJobDuration)$. Jobs with negative $slack$ are not admitted.\\
+\paragraph{Predictors:} Like \gs, different predictors can be plugged into
+\gsdl. However, in this study predictors are tuned to predict maximum task
+length.  Since for a job to finish within it is required to ensure that the
+longest task finishes within the deadline. Therefore, training data for the
+distribution based predictor, 3Sigma, and the point estimate predictor consists
+maximum task length. \slearn uses the maximum task length observed from all the
+sampled tasks.\\ 
+Additionally, leveraging the above observation \gsdl drops a job if it has
+even one unscheduled task at $t = deadline - jobDuration$ time.\\
+\paragraph{Workloads:} We used the same set of workloads, GTrace and 2STrace,
+as used in study I \S\ref{sec:study}. The original Google trace and 2Sigma
+trace do not have deadline information. We derived deadlines keeping consitency
+with the obeservations made in previous works like Morpheus~\cite{morpheus} and
+Tetrisched~\cite{tetrisched}. Also, we stretched job inter-arrival time such
+that with a fully accurate predictor \gsdl can finish more than 90\% jobs
+within deadline. For each job we set the deadline to be $t \times
+maxTaskLength$ from its arrival time. We varied $t$ from 2.6 to 3.4 with a step
+of 0.2.\\
+\paragraph{Results:} We have summarized the job drop rate for \slearn and
+\primarybasepredict in the table~\ref{table:study2:jobsDropped:2STrace} for the
+2STrace and in table~\ref{table:study2:jobsDropped:GTrace} for the GTrace.  
+\begin{table}
+  \caption{Number of jobs dropped for 2STrace}
+\label{table:study2:jobsDropped:2STrace}
+  \centering
+      {\small
+	\begin{tabular}{|c|c|c|c|c|c|}
+	  \hline
+		Deadline Multiplier&2.6& 2.8&3.0&3.2&3.4\\
+	  \hline
+		\slearn&910&915&921&925&929\\
+	  \hline
+		\primarybasepredict &867&881&883&891&895\\
+	  \hline
+		Point Prediction &866&878&884&891&898\\
+	  \hline
+		Zero Error &918&919&927&932&935\\
+	  \hline
+	\end{tabular}
+      }
+\vspace{-0.1in}
+\end{table}
+\begin{table}
+  \caption{Number of jobs dropped for GTrace}
+\label{table:study2:jobsDropped:GTrace}
+  \centering
+      {\small
+	\begin{tabular}{|c|c|c|c|c|c|} 
+	  \hline
+		Deadline Multiplier&2.6& 2.8&3.0&3.2&3.4\\  
+	  \hline
+		\slearn&1&2&3&4&5\\
+	  \hline
+		\primarybasepredict &1&2&3&4&5\\
+	  \hline
+	\end{tabular}
+      }
+\vspace{-0.1in}
+\end{table}
+}
+\fi
+

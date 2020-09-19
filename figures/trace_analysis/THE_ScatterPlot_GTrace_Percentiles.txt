@@ -1,0 +1,78 @@
+===========================================================
+Min for ratio of task by history covs:  0.0
+P1 for ratio of task by history covs:  2.5561752826e-06
+P30 for ratio of task by history covs:  0.0168510969747
+P40 for ratio of task by history covs:  0.0360804424085
+P50 for ratio of task by history covs:  0.0519468837065
+P60 for ratio of task by history covs:  0.102168547587
+P70 for ratio of task by history covs:  0.268206123567
+P90 for ratio of task by history covs:  2.05593524501
+P95 for ratio of task by history covs:  3.14442599732
+P99 for ratio of task by history covs:  3.72922247388
+Max for ratio of task by history covs:  4.0
+Mean for ratio of task by history covs:  0.484817555214
+Standard deviation for ratio of task by history covs:  0.998127134265
+===========================================================
+===========================================================
+Min for history covs:  0.0628733941169
+P1 for history covs:  0.0688029534074
+P30 for history covs:  0.221942566981
+P40 for history covs:  0.313207667884
+P50 for history covs:  0.496524362062
+P60 for history covs:  0.607871710573
+P70 for history covs:  1.02655083358
+P90 for history covs:  2.86597177449
+P95 for history covs:  4.0
+P99 for history covs:  4.0
+Max for history covs:  4.0
+Mean for history covs:  0.931097042067
+Standard deviation for history covs:  1.13293381951
+===========================================================
+===========================================================
+Min for task covs:  0.0
+P1 for task covs:  2.73692559472e-06
+P30 for task covs:  0.0097148190964
+P40 for task covs:  0.0130522278114
+P50 for task covs:  0.0329284920812
+P60 for task covs:  0.0539057296131
+P70 for task covs:  0.0677400545274
+P90 for task covs:  0.296282742964
+P95 for task covs:  0.391719401075
+P99 for task covs:  0.606935978419
+Max for task covs:  0.799554406665
+Mean for task covs:  0.0991935771481
+Standard deviation for task covs:  0.152273146761
+===========================================================
+===========================================================
+Min for recurrence count:  0.0
+P1 for recurrence count:  0.0
+P30 for recurrence count:  0.0
+P40 for recurrence count:  0.0
+P50 for recurrence count:  0.0
+P60 for recurrence count:  0.0
+P70 for recurrence count:  3.3
+P90 for recurrence count:  15.0
+P95 for recurrence count:  17.2
+P99 for recurrence count:  55.63
+Max for recurrence count:  62.0
+Mean for recurrence count:  5.22
+Standard deviation for recurrence count:  11.553856499
+===========================================================
+===========================================================
+Min for recurrence fraction:  0.0
+P1 for recurrence fraction:  0.0
+P30 for recurrence fraction:  0.0
+P40 for recurrence fraction:  0.0
+P50 for recurrence fraction:  0.0
+P60 for recurrence fraction:  0.0
+P70 for recurrence fraction:  0.0185530250748
+P90 for recurrence fraction:  0.0422619047619
+P95 for recurrence fraction:  0.101396970305
+P99 for recurrence fraction:  0.246370065789
+Max for recurrence fraction:  0.257894736842
+Mean for recurrence fraction:  0.0218115802669
+Standard deviation for recurrence fraction:  0.0515444321604
+===========================================================
+50 50 50 50
+0
+1

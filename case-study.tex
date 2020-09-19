@@ -1,0 +1,52 @@
+\section{Case Study}
+\label{sec:study}
+
+In this section, we answer the second key question about the sampling-based
+learning: {\em Can delaying scheduling the
+remaining tasks till completing the sampled tasks hurt the
+job performance, \eg completion time?
+% \deadlineCS{or meeting deadline (SLO)}?
+}
+We answer this question through extensive simulation and testbed experiments.
+
+Our approach is to design a generic scheduler, denoted as \gs, that schedules
+jobs based on job runtime estimates to optimize a given performance metric, \eg
+average job completion time (JCT).  We then plug into \gs different
+prediction schemes to compare their effectiveness.
+\rm{In particular, we compare four predictors:
+(1) the sampling-based predictor \slearn,
+(2) the distribution based predictor proposed in 3Sigma~\cite{3Sigma},
+(3) a point estimate predictor,
+and
+(4) a LAS estimator.
+(5) an Oracle estimator, which always predicts with 100\% accuracy.
+We further compare with a FIFO-based scheme, where the scheduler
+simply prioritizes jobs in the order of their arrival.
+}
+
+%\addaj{We do not evaluate against Kairos~\cite{kairos:socc2018} as the policy
+%is inherently preemptive and doesn't provide same liveness guarantee.}
+
+\subsection{Scheduler and Predictor Design}
+\label{sec:study:design}
+\input design
+
+%\subsection{Simulation}
+\subsection{Experimental Results}
+\label{sec:study:sim}
+\input simulation
+
+\if 0
+\subsubsection{Evaluation}
+\label{sec:study:testbed}
+\input testbed
+\fi
+
+\if 0
+\section{Case Study - II}
+\label{sec:study2}
+
+\subsection{Scheduling for Meeting Deadlines}
+\label{sec:study2:design}
+\fi
+%\input deadline-design

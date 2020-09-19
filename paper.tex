@@ -1,0 +1,219 @@
+%\documentclass[letterpaper,twocolumn,10pt]{article}
+%\usepackage{usenix2019_v3}
+
+%%%%%%%%%%%	SOCC 2019 template below	%%%%%%%%%%%
+%\documentclass[10pt,twocolumn]{article}
+%\usepackage{times}
+%
+%% do not change these values
+%\baselineskip 12pt
+%\textheight 9in
+%\textwidth 6.5in
+%\oddsidemargin 0in
+%\topmargin 0in
+%\headheight 0in
+%\headsep 0in
+%%%%%%%%%%%	SOCC 2019 template above	%%%%%%%%%%%
+
+\documentclass[sigplan, 10pt]{acmart}
+\pagestyle{plain}
+%\setlength{\baselineskip}{12pt}
+%%\documentclass[10pt, sigconf, anonymous]{acmart}
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{}	% Remove this in camera ready
+\settopmatter{printfolios=true} 
+\settopmatter{printacmref=false} 
+\acmSubmissionID{5}
+\usepackage{booktabs} % For formal tables
+\usepackage{xspace}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{graphicx,amssymb,amsmath,endnotes}
+\usepackage{ulem}
+\usepackage[tight]{subfigure}
+\usepackage{fancyhdr}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\usepackage{textcomp, libertine}
+\usepackage{xcolor}
+\usepackage{varwidth}
+\usepackage[noend]{algpseudocode}
+%\usepackage{titlesec}
+%% Copyright
+\normalem
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+% DOI
+
+% ISBN
+
+%Conference
+% These commands are optional
+%\acmBooktitle{Transactions of the ACM Woodstock conference}
+\sloppy
+%\setcounter{secnumdepth}{4}
+%\titleformat{\paragraph}
+%{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+%\titlespacing*{\paragraph}
+%{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+%\renewcommand{\baselinestretch}{0.99}
+
+\begin{document}
+\title{The Case for Task Sampling based Learning for Cluster Job Scheduling
+ }
+\author{
+\xspace
+%% If anonymous submission change id in the acmart.cls line num 1117
+Paper ID: 56, pages = 12+2\\
+\date{\today}
+} %% end author
+
+\newcommand{\oldstuff}[1]{}
+\newcommand{\yes}{$\checkmark$}
+\newcommand{\limited}{Limited}
+\newcommand{\no}{$\times$}
+%\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\newcommand{\etc}{\emph{etc.}\xspace}
+\newcommand{\etcc}{\emph{etc.}}
+\newcommand{\ie}{\emph{i.e.,}\xspace}
+\newcommand{\eg}{\emph{e.g.,}\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+\newcommand{\SmallCrunch}{\vspace{-0cm}}
+\newcommand{\smallcrunch}{\vspace{-0cm}}
+
+\renewcommand{\paragraph}[1]{\smallskip\noindent{\bf{#1}}}
+
+\definecolor{red}{rgb}{1,0,0}
+\renewcommand{\comment}[1]{{\it #1}}
+\renewcommand{\rm}[1]{{}}
+%\definecolor{purple}{RGB}{127,0,127}
+
+%%%%%%%%%%%%%%%%% below for USENIX sty no use of color %%%%%%%%%%%%%%%%
+
+%\newcommand{\commentlinx}[1]{{ \textit{linx: #1}}}
+%\newcommand{\commentaj}[1]{{\textit{aj: #1}}}
+%\newcommand{\questionaj}[1]{{\textbf{questionAJ: #1}}}
+%\newcommand{\updated}[1]{{{}}}
+%\newcommand{\todoaj}[1]{{\textit{TODO(AJ): #1}}}
+%\newcommand{\editaj}[2]{{\sout{#1}{#2}}}
+%\newcommand{\addaj}[1]{{ {ADD?: #1}}}
+%\newcommand{\updated}[1]{{{updated: #1}}}
+%%%%%%%%%%%%%%%%% above for USENIX sty no use of color %%%%%%%%%%%%%%%%
+
+\newcommand{\deadlineCS}[1]{{\color{red} #1}}
+\newcommand{\soccReviewEdit}[2]{{\color{red} \textit{socc19 (Reviewer - #1): }#2}}
+\newcommand{\commentlinx}[1]{{\it \textit{linx: #1}}}
+\newcommand{\commentaj}[1]{{\it \textit{aj: #1}}}
+\newcommand{\questionaj}[1]{{\it \textbf{questionAJ: #1}}}
+\newcommand{\updated}[1]{{\it {Updated: #1}}}
+%\newcommand{\updated}[1]{{\color{red} { updated on #1}}}
+\newcommand{\editaj}[2]{{\sout{#1}\it {#2}}}
+\newcommand{\removeajbcoz}[2]{{\color{red}{\textbf{Remove following:}}}{\sout{#1}}{\color{red} {\textbf{ - Because} #2}}}
+\newcommand{\removeaj}[1]{{\color{red}{\sout{#1}}}}
+\newcommand{\addaj}[1]{{\it {ADD?: #1}}}
+\newcommand{\addajbcoz}[2]{{\it {ADD?: #1} \textit{\textbf{ - } #2}}}
+\newcommand{\todoaj}[1]{{\it \textit{TODO(AJ): #1}}}
+
+
+%%%%% Below are the hide versions of the aj commands %%%%%
+%\renewcommand{\commentaj}[1]{{\color{red}}}
+%\renewcommand{\questionaj}[1]{{\color{red}}}
+%\renewcommand{\updated}[1]{{\color{red} {}}}
+%%\renewcommand{\updated}[1]{{\color{red} {updated: #1}}}
+%\renewcommand{\editaj}[2]{{\color{red} #2}}
+%\renewcommand{\removeaj}[2]{{\color{red}{}}{}	{\color{red} {}}}
+%\renewcommand{\addaj}[1]{{\color{red}}}
+%%\renewcommand{\highlight}[1]{{\color{blue}#1}}
+%\renewcommand{\todoaj}[1]{{\color{red}}}
+%%%%% Above are the hide versions of the aj commands %%%%%
+
+\newcommand{\insitu}{{\em in situ}\xspace}
+
+\newcommand{\numTraces}{{3}\xspace}
+\newcommand{\thinLimit}{{3}\xspace}
+\newcommand{\namepredict}{{\sc SLearn}\xspace}
+%\newcommand{\namepredict}{{\sc Patience-Predict}\xspace}
+\newcommand{\pointestimator}{{\sc Point-Est}\xspace}
+\newcommand{\oracle}{{\sc Oracle}\xspace}
+\newcommand{\fifo}{{\sc {FIFO}}\xspace}
+
+\newcommand{\name}{{\sc SLearn}\xspace}
+\newcommand{\namee}{{\sc SLearn}}
+\newcommand{\lTechnique}{{\sc SLearn}\xspace}
+\newcommand{\slearn}{{\sc SLearn}\xspace}
+\newcommand{\las}{{\sc LAS}\xspace}
+
+\newcommand{\gs}{{\sc GS}\xspace}
+\newcommand{\gsdl}{{\sc GS-DL}\xspace}
+\newcommand{\resistance}{\textit{resistance}\xspace}
+\newcommand{\ychurm}[1]{{\hspace{-0.2cm}}}
+\newcommand{\primarybase}{{3Sigma}\xspace}
+%\newcommand{\primarybasepredict}{{3Sigma-predict}\xspace}
+\newcommand{\primarybasepredict}{{3Sigma}\xspace}
+
+\newcommand{\panic}[1]{\vspace{-#1 plus 1pt minus 1pt}}
+\newcommand{\panictwo}[1]{\vspace{-#1 plus 2pt minus 2pt}}
+
+\newcommand{\nsection}[1]{\panictwo{0pt}\section{#1}\panictwo{0pt}}
+\newcommand{\nsubsection}[1]{\panictwo{0pt}\subsection{#1}\panictwo{0pt}}
+\newcommand{\nsubsubsection}[1]{\panictwo{0pt}\subsubsection{#1}\panictwo{0pt}}
+
+\newcommand{\flow}{flow\xspace}
+%\renewcommand{\comment}[1]{{\color{red} #1}}
+
+\newcommand{\linx}[1]{{\color{blue} #1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%			%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Below by prof. Lin %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%			%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\nnone}{n_1}
+\newcommand{\nntwo}{n_2}
+\newcommand{\mone}{m_1}
+\newcommand{\mtwo}{m_2}
+\newcommand{\muone}{\mu_1}
+\newcommand{\mutwo}{\mu_2}
+\newcommand{\sigmaone}{\sigma_1}
+\newcommand{\sigmatwo}{\sigma_2}
+\newcommand{\Tc}{T^c}
+\newcommand{\Tcprime}{\tilde{T}^c}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%			%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Above by prof. Lin %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%			%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\sigmanot}{\sigma_o}
+\newcommand{\sigmanotsqrd}{\sigmanot^2} 
+\newcommand{\sigmaonesqrd}{\sigmaone^2}
+\newcommand{\yvec}{\vec{y}}
+
+\maketitle
+
+\input abstract
+\input intro
+\input back
+\input sampling
+\input comparison
+\input case-study
+\input discussion
+\input conc
+\pagebreak
+
+
+%\bibliographystyle{abbrv}
+%\bibliography{coflow}
+%\input{samplebody-conf}
+
+%\bibliographystyle{abbrv}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{js}
+%\bibliography{sample-bibliography}
+
+\end{document}
+

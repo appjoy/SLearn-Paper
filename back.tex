@@ -1,0 +1,511 @@
+\section{Background and Related Work}
+\label{sec:back}
+
+In this section, we provide a brief background on the cluster scheduling problem,
+review existing schedulers based on learning job runtime characteristics, and
+discuss their weaknesses.
+
+%\vspace{-0.1in}
+\subsection{Cluster Scheduling Problem}
+\label{sec:back:problem}
+
+%Growing use of cloud for variety of applications, increase in shared usage of
+%the cluster among multiple users and execution of diverse workloads in the same
+%cluster due to cluster consolidation leads to challenge of appropriately
+%scheduling jobs in order to best utilize the cluster. The notion of best
+%utilization might vary. In some cases requirement is to ensure fairness accross
+%users, in some other meeting deadlines for maximum number of jobs is most
+%important. Whereas for some cases quickly completing maximum number of jobs is
+%the desired goal. Also, in many cases minimizing the operational cost of the
+%cluster is the primary goal and for achieving that it is important to minimize
+%average job completion time. Last two situations leads to the cluster
+%scheduling problem with goal of minimizing average job completion time. In this
+%paper we focus on online cluster scheduling problem with goal of minimizing
+%average job completion time.
+
+%\questionaj{Why the first para here is not good? Is it not a way to tell that
+%why scheduling is a problem?\\}
+%Businesses ranging from Fortune-500 companies to small seed funded start-ups are
+%increasingly relying on shared clusters for executing thier business critical
+%jobs. The efficiency of cluster usage has a direct impact on business running cost.
+%This makes efficient cluster scheduling and meeting desired scheduling
+%objectives very crucial.
+
+Clusters are being shared among multiple users to execute diverse jobs. Such
+jobs typically arrive online and compete for shared resources. In order to best
+utilize the cluster and to ensure that jobs also meet their service level
+objectives, efficient job scheduling is essential. Since jobs arrive online,
+their runtime characteristics are not known a priori. This lack of information
+makes it challenging for the scheduler to determine the right order for running
+the jobs that maximizes resource utilization and/or meets application service
+level objective (SLOs). Additionally, jobs have different SLOs. For some
+meeting deadlines is important while for others faster completion or minimizing
+the use of networks is more important. Such a diverse set of objectives pose
+further challenges to effective job
+scheduling~\cite{drf:nsdi11,jockey:eurosys2012, shufflewatcher, corral,
+morpheus, delay:eurosys10, cdef:atc18}.
+
+%\soccReviewEdit{A, B}{\paragraph{Job model.}
+%\vspace{-0.1in}
+\subsection{Job Model}
+\label{sec:back:jobmodel}
+
+We consider big-data compute clusters running data-parallel frameworks
+such as Hadoop~\cite{hadoop:web}, Hive~\cite{hive:web},
+Dryad~\cite{dryad:eurosys2006}, 
+Scope~\cite{scope:2008},
+and Spark~\cite{spark:web} that run simple MapReduce
+jobs~\cite{mapreduce:osdi04} or more complex DAG-structured jobs, where each job
+processes a large amount of data. Each job consists of one or multiple
+stages, such as map or reduce, and each stage 
+partitions the data into
+manageable chunks and runs many parallel tasks, one for processing
+each data chunk.  
+
+\if 0
+Examples of such big-data jobs may involve a single
+phase of parallel compute tasks (\eg in the mapper stage of MapReduce)
+or multiple phases of compute with dependency modeled by directed
+acyclic graphs (DAGs)~\cite{mapreduceonline:nsdi2010, apache:tez,
+  dryad:eurosys2007, dandelion:sosp2013}.  
+In this paper, we focus on
+a single phase of parallel tasks. Our job model % of a single phase of
+parallel tasks is similar to that
+of~\cite{borg,perforator:socc2016,IfYouAreLateDontBlameUs:socc14} and
+forms the building block for generalized job scheduling strategies for
+multi-phase (DAG) jobs.  }
+\fi
+
+\if 0
+For our experiments and analysis in this paper, each job consists of a
+single phase of parallel tasks. We assume one-phase model because (1)
+the same model is assumed in previous work \cite{jamiasvu},
+\cite{3Sigma} and \cite{stratus:socc2018}; (2) it is practical to
+implement - in each phase the application manager submits to the YARN
+scheduler a request for the tasks belonging to this phase, and the
+YARN scheduler then decides how to schedule them. (3) Same as in
+recent work on job scheduling~\cite{stratus:socc2018}, the traces used
+in our experiment do not contain multi-phase information. 
+We will discuss how to apply sampling-based learning 
+to multi-phase jobs (DAGs) in \S\ref{subsec:dag}.
+%  Note that scheduling (of multi-phase or single-phase jobs) is
+%  orthogonal to and can be decoupled from learning job/task size.
+}
+\fi
+
+%The increase in shared usage of the cluster among multiple users and
+%execution of diverse applications in the same cluster leads to the challenge of
+%appropriately scheduling jobs in order to best utilize the cluster resources.
+%The notion of best utilization might vary from case to case. In some cases the
+%requirement is to ensure fairness in resource sharing among users, in some
+%other meeting deadlines for the maximum number of jobs is most important and
+%for some minimizing the makespan is the desired goal.  Also, in many cases
+%minimizing the operational cost of the cluster is the primary goal and for
+%achieving that it is important to minimize average job completion time.  With
+%such diverse needs scheduling 
+%%Scheduling distributed jobs with the goal of best utilizing the cluster and
+%%optimizing the scheduling goals like, fairness, minimizing average completion
+%%time, minimizing intra-cluster commnunication etc., 
+%itself is a challenging job \cite{drf:nsdi11, jockey:eurosys2012,
+%shufflewatcher, corral}. Now with the growing use of cloud for executing a wide
+%range of applications ranging from advance machine learning jobs to simple
+%compute jobs in the same shared cluster has made this further challenging
+%\cite{morpheus, 3Sigma}.
+
+%\paragraph{Importance of learning runtime characteristics of jobs:} As
+%discussed above, in the modern clusters online arriving jobs with diverse
+%runtime characteristics are being executed in parallel.  Hence, the schedulers
+%have very little information about runtime characteristics of jobs to be able
+%to use optimal algorithms, like SJF, which are mostly offline in nature.  So to
+%be able to use optimal algorithms or algorithms designed for offline settings
+%in online settings it becomes very important to \textit{apriori} learn the
+%runtime characteristics of the jobs to be scheduled.
+
+%\vspace{-0.1in}
+\subsection{Existing Learning-based Schedulers}
+\label{sec:back:existing}
+
+An effective way to tackle the challenges of cluster scheduling is to
+learn and estimate runtime characteristics of pending jobs. If we can accurately
+estimate jobs characteristics, we can leverage offline scheduling
+algorithms that are known to be optimal, \eg Shortest Job First
+for minimizing the average completion time.
+
+
+\begin{table}[tp]
+%\vspace{-0.05in}
+\caption{Summary of selected previous work that use history-based learning techniques.}
+\label{table:prevwork}
+	%\questionaj{I have not mentioned all the prior works in table \ref{table:prevwork} which are in \S\ref{sec:back:existing}. The works I have mentioned in the table cover all varieties. I didn't add other things to keep the table succint. Do you think we should expand the table?\\}
+%\commentaj{I am not mentioning prediction accuracy as they are differently measured in different papers and are on different traces. Comparison of those values are not very sensible.}
+\centering
+{\small
+\vspace{-0.1in}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+		\textbf{ Name} & \textbf{Property} & \textbf{Estimation} & \textbf{Learning} \\ %& \textbf{Cluster traces used}\\
+			& \textbf{estimated} & \textbf{technique} & \textbf{frequency} \\ %& \textbf{(Private + Public)}\\
+	 
+%\hline
+\hline	
+	  %\textbf{Corral \cite{corral}} & Job runtime & Profiling models & Makes several impractical assum- &  1 + 1 \\
+	  \textbf{Corral } & Job runtime & Offline model & On arrival \\ %& 1 + 1 \\
+	  \textbf{\cite{corral}} &  & (not updated) & \\% &\\
+\hline
+	  \textbf{DCOSR} & Memory elasti- & Offline model & Scheduler \\ %& 0 + 0 \\
+	  \textbf{\cite{DontCryOverSpilledRecords}}& city profile & (not updated) & dependent \\% &\\
+\hline
+	  \textbf{Jockey} & Job runtime & Offline & Periodic \\ %& 1 + 0 \\
+	  \textbf{\cite{jockey:eurosys2012}}& & simulator  &  \\% &\\
+\hline
+	  \textbf{3Sigma} & Job runtime & Offline & On arrival \\ %& 3 + 1 \\
+	  \textbf{\cite{3Sigma}} & history dist. & model &  \\% &\\
+
+	%%%%% Morpheus was cut from text so we have removed it from table as well %%%%%	  
+%\hline
+%	  \textbf{Morpheus} & SLOs; Resource & Offline & On arrival \\ %& 1 + 0 \\
+%	  \textbf{\cite{morpheus}} & requirements &  model   &  \\% &\\
+%\hline
+%	  \textbf{Tetrisched \cite{tetrisched}} &  &  &  & 0 + 1 \\
+\hline
+\end{tabular}
+%\begin{tabular}{|c|c|c|c|c|c|}
+%\hline
+%		\textbf{ Name} & \textbf{Property} & \textbf{Estimation} & \textbf{Target} & \textbf{Learning}  & \textbf{Cluster traces used}\\
+%			& \textbf{estimated} & \textbf{technique} & \textbf{job types} & \textbf{frequency} & \textbf{(Private + Public)}\\
+%	 
+%%\hline
+%\hline	
+%	  %\textbf{Corral \cite{corral}} & Job runtime & Profiling models & Makes several impractical assum- &  1 + 1 \\
+%	  \textbf{Corral \cite{corral}} & Job runtime & Offline & Recurrent and & On arrival & 1 + 1 \\
+%	  &  & static model & offline jobs &  &\\
+%\hline
+%	  \textbf{Jockey \cite{jockey:eurosys2012}} & Job runtime  & Offline & Recurrent jobs & Periodic & 1 + 0 \\
+%	  &  & simulator & &  &\\
+%\hline
+%	  \textbf{3Sigma \cite{3Sigma}} & Job runtime & Distribution of job & All jobs & On arrival & 3 + 1 \\
+%	  & & runtime history & &  &\\
+%\hline
+%	  \textbf{Morpheus \cite{morpheus}} & SLOs; Resource & Offline  & Recurrent jobs & On arrival & 1 + 0 \\
+%	  & requirements &  static model &  &  &\\
+%\hline
+%	  \textbf{Don't cry \cite{DontCryOverSpilledRecords}} & Memory elasticity & Offline & Recurrent jobs & Scheduler & 0 + 0 \\
+%	  & profile & static model &  & dependent &\\
+%%\hline
+%%	  \textbf{Tetrisched \cite{tetrisched}} &  &  &  & 0 + 1 \\
+%\hline
+%%\vspace{-0.2in}
+%\end{tabular}
+}
+\vspace{-0.1in}
+\end{table}
+
+The problem of learning runtime characteristics of jobs has been intensively
+studied.  Cluster schedulers using various learning methods have been proposed
+\cite{corral, morpheus, shufflewatcher, 3Sigma, tetrisched,
+DontCryOverSpilledRecords, perforator:socc2016, Apollo:osdi2014, wsmith:IEEE98, stratus:socc2018, roughSetEstimation:IEEE:Shonali}.  All previous learning schemes
+are {\em history-based}, \ie they learn job characteristics by observations
+made from the past job executions. In particular, existing history-based
+learning approaches can be broadly categorized into the following groups, as
+summarized in Table~\ref{table:prevwork}.
+
+
+
+%\cite{DontCryOverSpilledRecords} attempt to come up with a resource assignment
+%using offline models.
+%\paragraph{Offline prediction or profiling.}
+
+\paragraph{Learning offline models.}
+\if 0
+\commentaj{Sampling based approach is fundamentally different from online
+updates.  Learning by sampling is in-principle same as offline learning for
+scheduling all the non-sampling tasks as non-sampling tasks are not scheduled
+till sampling is over. Whereas online updates act as an error correction
+mechanism while scheduling in the remaining tasks, if any, of the job or to
+estimate remaining execution time of running jobs while scheduling new jobs.\\}
+Corral~\cite{corral} uses an offline predictor for estimating job running
+times, which it acknowledges may not be highly accurate.
+\fi
+Corral's prediction model is designed with the primary assumption that most
+jobs are recurring in nature. It also makes several additional assumptions,
+such as the latency of each stage of a multi-stage job is directly proportional
+to the amount of data processed by it, which do not always hold true~\cite{corral}.
+
+DCOSR~\cite{DontCryOverSpilledRecords} predicts the memory usage for
+data parallel compute jobs using an offline model built from a fixed
+number of profile runs.  These profile runs are specific to the
+framework and depend on the  framework's properties as well as the
+hardware they run on. Any software update in the existing frameworks,
+addition of new framework or hardware update will require an update in
+profile.
+
+%The Yarn capacity scheduler \cite{yarnCapacity:web} also uses offline modeling
+%created by profiling data gathered from execution history. \todoaj{Find
+%details about following - to do scheduling? modeling what? and how is the
+%model used?}
+
+%Tetris \cite{MultiResourcePackingForClusterSchedulers} also uses history
+%for predicting job running times for recurring jobs. 
+For analytics jobs that perform the same computation periodically on different sets
+of data, Tetris~\cite{MultiResourcePackingForClusterSchedulers} takes
+measurements from past executions of the job to estimate the requirements for
+the current execution.
+
+%{how to predict? -- aj: Paper doesn't provide any more details on it.}
+
+%\questionaj{This paper uses 4 different ways for prediction. Two are plain
+%hueristics. Third is for reccuring jobs and uses history. Another is for such
+%jobs whose tasks arrive at different times and so they use measurements from
+%first few tasks for the later task. The second one is not exactly sampling but
+%in principle it is the same.  Do you think mentioning this paper might make
+%confused about our novelity?}
+
+%Another reservation based scheduler \cite{IfYouAreLateDontBlameUs:socc14}
+%uses history baesd predictor. % Commenting this as no name for the scheduler or predictor, hard to cite and not very important. 
+
+\paragraph{Learning offline models with periodic updates.}
+Jockey \cite{jockey:eurosys2012} periodically characterizes job progress at
+runtime, which along with a job's current resource allocation is used
+{by an offline simulator to estimate the job's completion time
+% . Based on   the estimated completion time, 
+and update the job's resource allocation.}
+%  {as input to an offline estimated random variable function. The output of the
+% function is used to update the resource allocation of the job so that its utility
+% is optimized.}
+\rm{The running time estimates made by the simulator are based
+on performance statistics extracted from one or more previous runs of the
+recurring job.} Jockey's learning module relies on the periodicity of job
+occurrences and cannot work with new jobs.
+
+%Tetrisched \cite{tetrisched} leverages the estimated job running
+%times \comment{how does it estimate?}  and deadlines provided by the
+%reservation systems of scheduling frameworks like Hadoop YARN
+%\comment{to plan ahead in deciding whether or not to wait for a busy preferred resource.} It
+%also coordinates with the reservation system to re-evaluate the
+%immediate-term scheduling plan for all pending jobs at every scheduling
+%cycle. \comment{this sentence is strange. above has not talked about estimation?}
+%It is based on assumption that most of the jobs will be
+%reccuring in nature.
+
+%Tetrisched \cite{tetrisched} works in conjunction with reservation systems of
+%scheduling frameworks like Hadoop YARN and leverages information provided by
+%them about job deadlines and estimated runtimes to plan ahead in deciding
+%whether to wait for a busy preferred resource or work with less preferred
+%options. Tetrisched coordinates with the reservation system to re-evaluate the
+%immediate-term scheduling plan for all pending jobs every scheduling cycle.
+%Tetrisched is based on assumption that most of the jobs will be reccuring in
+%nature.
+
+%Perforator \cite{perforator:socc2016} also leverages job structure and
+%profiling to predict job runtimes.
+
+\paragraph{Learning for non-recurrent jobs.}
+JVuPredict~\cite{jamiasvu} uses a black-box approach to learn
+job properties. Instead of using execution history from the exact same jobs,
+it matches jobs on the basis of some common features such as application name,
+job name, the user who owns the job, and the resource requested by the job.
+Additionally, instead of using just one mathematical metric for estimating
+running times from the distribution, it uses multiple metrics, such as rolling
+average and median. In principle, this elaborate design of JVuPredict 
+revokes the reliance on recurring jobs, but it still depends on historical data.
+
+%\paragraph{Distribution based learning.}
+3Sigma~\cite{3Sigma} shares the two ideas of
+JVuPredict~\cite{jamiasvu}, \ie matching jobs on the basis of some
+common features and using multiple metrics,
+and hence is also applicable to non-recurring jobs.
+It introduces a new idea on prediction: instead of using point
+metrics to predict runtimes, it uses full distributions of relevant
+runtime histories.
+\if 0
+3Sigma~\cite{3Sigma} differs from previous history-based learning in three ways.
+(1) Instead of using point metrics to predict runtimes, it uses full
+distributions of relevant runtime histories.
+(2) Instead of using execution history from the
+exact same jobs, it matches jobs on the basis of some common features such as
+application name, job name, the user who owns the job, and the resource requested by the
+job.
+%
+(3) Instead of using just one mathematical metric for
+estimating running times from the distribution, it uses multiple metrics, such as
+rolling average and median.
+\fi
+%  It maintains a running metric to pick a feature
+%  value and metric pair that can be best estimator.
+%It maintains a running metric which tells that
+%which feature value and metric pair can be best estimator and always use the
+%one with the highest score.
+%  {Though in principle, this elaborate design of
+% 3Sigma revokes the reliance on recurring jobs, it still depends on historical data.
+However, since it is impractical to maintain precise distributions for each
+feature value, it resorts to approximating distributions, which
+compromises the benefits of having full distributions. 
+
+In practice, the approach of matching similar jobs on 
+one or a few common features often does not work well.  The
+paper~\cite{3Sigma} reports that for over 23\% jobs, the prediction
+error is at least 100\% and for many jobs it is off by an order of
+magnitude. Such error in estimating a job's
+runtime affects all the jobs being scheduled around the same
+time.
+
+%As a consequence, it has to rely
+%heavily on error correction mechanisms, \comment{which are expensive??? -- it is hard to say}.
+%Each job also has a utility, as a funtion of runtime, assigned to it. The
+%distribution along with the utility is used to  
+
+\if 0
+\commentaj{Paragraph on SLOs is not parallel with others. Probably this should
+be merged with something else.\\}
+\paragraph{Learning service level objectives (SLOs).} Morpheus \cite{morpheus}
+uses historical data to learn user expectations. Using historical data it
+attempts to codify implicit user expectations as explicit Service Level
+Objectives (SLOs). Limitation of the learning module of Morpheus is that it
+relies on periodicity in occurrence of jobs.
+\fi
+
+%Similarly other works \cite{IfYouAreLateDontBlameUs:socc14,
+%MultiResourcePackingForClusterSchedulers} have also used history for prediction
+%of job runtimes but they have relied heavily on recurrence of jobs or on
+%the periodicity of jobs. Also, 3Sigma \cite{3Sigma}, Jockey
+%\cite{jockey:eurosys2012}, Morpheus \cite{morpheus} have highlighted that how
+%history can get outdated and might not be very reliable even for periodic jobs,
+%we discuss this in details in \S\ref{sec:back:whatsWrong}.
+%%The key idea and limitations of 
+
+
+
+\subsection{Learning from History: Assumptions and Reality}
+\label{sec:back:whatsWrong}
+
+Predicting job runtime characteristics from history information relies on two
+conditions to hold: (1) The jobs are recurring; (2) The performance of
+the same {or similar} jobs
+will remain consistent over time.  In the following, we argue why these
+conditions may not be applicable to modern day clusters.
+
+%One of the major assumptions history based predictors rely on is that most of
+%the jobs are recurring.
+
+%Different history-based predictors are designed in accordance with the distribution
+%and behavior pattern of jobs in the cluster.
+%%Though they incorporate different ways in their design to mitigate the harm
+%%which will happen when such assumptions fail\cite{corral, jockey:eurosys2012,
+%%morpheus, 3Sigma}.
+%Such predictors will not perform in an expected way when there is a
+%considerable change in the fraction of recurring jobs in the cluster.
+%%Or overall the cluster property is not very similar to properties for which the
+%%predictor was designed.
+%Different cluster schedulers which use history-based prediction mechanisms,
+%based on the requirement of their workload, incorporate different ways in
+%their design to mitigate the harm which will happen when such assumptions
+%fail\cite{corral, jockey:eurosys2012, morpheus, 3Sigma}. Such predictors might
+%not perform in an expected way when there is a considerable change in the
+%fraction of recurring jobs in the cluster or overall the cluster property is
+%not very similar to properties for which the predictor was designed.
+
+%Cluster schedulers which use these prediction mechanisms 
+%appropriately build around exploiting this assumption in different ways
+%\cite{jockey:eurosys2012, 3Sigma, morpheus, corral}.  As these schedulers are
+%primarily exploiting the reccurance of jobs and with the 
+%might not perform in expected way when there is considerable change in fraction
+%of reccurring jobs in the cluster. 
+
+%\noindent
+%\vspace{-0.2in}
+\paragraph{Condition 1: The jobs are recurring.}
+Many previous work have acknowledged that not all jobs are
+recurrent. For example,
+the traces used in Corral \cite{corral} and Jockey
+\cite{jockey:eurosys2012} show that only 40\% of the jobs are recurrent and
+Morpheus \cite{morpheus} shows that 60\% jobs are recurrent.
+%A trace analysis study
+%\cite{workloadDiversity:atc18} has shown that there can be a huge variation in
+%properties across traces from different clusters as well as among jobs in the
+%same cluster.
+%In 3Sigma \cite{3Sigma} performance gain measured for the same metric can vary
+%upto 8$\times$ just by varying the trace.
+%%In 3Sigma \cite{3Sigma},performance gain measured for the same metric can vary
+%%from 1.5$\times$ to 8$\times$ just by varying the trace.
+%Also, the number of jobs with >95\% error in predicted runtimes varies upto
+%4$\times$ and number of jobs which have zero to negligible error varies upto
+%3.5$\times$ across different traces.
+%History based predictors, directly or indirectly, rely on some common
+%assumptions.  However, many of these assumptions are not applicable for modern
+%day's clusters.
+%So, cluster schedulers have to provide mechanisms to mitigate
+%effects of failure of these assumptions \cite{jockey:eurosys2012, 3Sigma,
+%morpheus, corral}.  
+%In this subsection, we discuss those assumption and their validity.
+
+%\paragraph{Assumption 2: Characteristics of recurrent jobs are highly predictable.}
+%Another property that history based predictors would ideally want to have is
+%that characteristics of the recurrent jobs are highly predictable.
+%\paragraph{Assumption 2: Runtime characteristics of newly arriving jobs can be
+%predicted with high accuracy using historical data.\\}
+
+%\noindent
+%\vspace{-0.2in}
+\paragraph{Condition 2: The performance of the same
+{or similar} jobs will remain consistent over time.}
+Previous works~\cite{3Sigma, morpheus, corral, jockey:eurosys2012} that exploited
+history-based prediction have considered jobs in one of
+the following two categories.
+%\begin{itemize}
+(1) {\em Recurring jobs}: A job is re-scheduled to run on newly arriving data;
+(2) {\em Similar jobs:} A job has not been seen before but has some
+attributes in common with some jobs executed in the past. The
+attributes can be application name, job name, user of
+the job, or amount of resources requested by the job.
+%\end{itemize}
+Many of the history-based approaches only predict for recurring jobs \cite{morpheus, corral,
+jockey:eurosys2012}, while some others \cite{3Sigma, jamiasvu, stratus:socc2018, roughSetEstimation:IEEE:Shonali} work for both categories of jobs.
+
+However, even the authors of history-based prediction schemes such as
+3Sigma~\cite{3Sigma} and Morpheus~\cite{morpheus} strongly argued why
+runtime properties of jobs, even with the same input, will not remain consistent
+and will keep evolving.  The primary reason is that updates in cluster
+hardware, application software, and user scripts to execute the cluster jobs
+affect the job runtime characteristics.
+{They found that}
+in a large Microsoft production cluster, within a one-month period,
+applications corresponding to more than 50\% of the recurring jobs were
+updated. The source code changed by at least 10\% for applications
+corresponding to 15-20\% of the jobs.  Additionally, over a one-year period,
+the proportion of two different types of machines in the cluster
+changed from 80/20 to 55/45. For a same production Spark job, there is
+a 40\% difference between the running times observed on the two types of
+machines~\cite{morpheus}.  
+
+For these reasons, although the state-of-the-art history-based system 3Sigma~\cite{3Sigma} 
+uses sophisticated prediction techniques,
+% Machine Learningd also shown that
+the predicted running times for more than 23\% of the jobs have at
+least 100\% error, and for many the prediction is off by an order of
+magnitude. In our analysis of two production cluster traces (see
+Figure~\ref{fig:accuracy:trace_analysis_window}), we observed similar
+levels of high variability in the runtime characteristics of the jobs with the same
+attributes.
+
+% \questionaj{The trace analysis will be disscused in
+% \S\ref{sec:comparison:quantity}. Do you think there is any need to add more of it here?}
+
+%Above observations make it quite evident that even in short duration runtimes
+%can vary significantly for similar jobs also.\\
+%The above observations make it clear that the assumption that a large fraction of
+%jobs is recurrent is not very reliable.
+%Additionally, characteristics of jobs
+%can vary a lot from one cluster settings to others and hence the design of the
+%scheduler needs to make those accomodations.
+%\cite{jockey:eurosys2012} and \cite{morpheus} have been evaluated only on
+%single trace.
+
+\if 0
+\paragraph{}
+Although the previous history based predictors have acknowledged
+the above discussed drawbacks, they did not provided a solution to tackle the
+root cause of the limitation, \ie the assumption that
+job runtime properties remains stationary over time \cite{jockey:eurosys2012, 3Sigma, morpheus, jamiasvu}.
+%They atmost provide steps to mitigate the effects of
+%the drawbacks \cite{jockey:eurosys2012, 3Sigma, morpheus, jamiasvu}.
+\fi

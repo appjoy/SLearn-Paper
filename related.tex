@@ -1,0 +1,50 @@
+\section{Related Work}
+\label{sec:related}
+
+We already summarize previous work on history-based learning schemes
+and job schedulers in \S\ref{sec:back:existing}. Here we summarize
+additioal related work.
+
+\textbf{Job scheduling:}
+{Stratus~\cite{stratus:socc2018} is a cluster scheduler that focuses
+on optimizing the dollar cost. It uses a runtime predictor
+derived from JamiasVu~\cite{jamiasvu} which has feature selection mechanisms
+similar to that used in 3Sigma~\cite{3Sigma}.}
+
+The Kairos~\cite{kairos:socc2018} scheduler is built on the principle
+  of Least Attained Service.  The policy is inherently preemptive and
+  does not provide same liveness guarantee as \slearn with
+  \gs. Further, \slearn is a learning based technique and Kairos
+  is a non-learning approach.
+
+%  We tried to access the soruce code of Kairos at the
+%  url~\cite{kairosScheduler} provided in the paper, but we got a not found error.
+%  We also wrote to the author however did not hear back till the time of writing
+%  this article.  
+
+\if 0
+There have been much work on scheduling in analytic
+systems and storage at scale by improving speculative tasks~\cite{late:osdi08,
+mantri:OSDI2010, dolly:nsdi13}, improving locality~\cite{delay:eurosys10,
+scarlett:eurosys11}, and end-point flexibility~\cite{sinbad:sigcomm13,
+  pisces:osdi12}.
+ 
+\fi
+\textbf{Speculative scheduling:} Recent works
+(\cite{creditscheduling:sigcomm17, trumpet:sigcomm16}) use the idea of
+online requirement estimation for scheduling in datacenter.
+%In Corral ~\cite{corral}, recurring big data %analytics jobs are scheduled using their history.\\
+
+%  \textbf{Flow scheduling:} There have been a rich body of prior work on flow
+%  scheduling to minimize flow completion time, both with prior information (\eg
+%  PDQ~\cite{pdq:sigcomm12}, pFabric~\cite{pfabric:sigcomm13}) and without prior
+%  information (\eg Fastpass~\cite{fastpass:sigcomm14},
+%  PIAS~\cite{pias:hotnets14}, ~\cite{pias:nsdi15}). These problems are
+%  orthogonal to the problem discussed in this paper. 
+
+\if 0
+{\textbf{Coflow scheduling:} Recent works,
+  Graviton~\cite{graviton:hotcloud16} and Saath~\cite{jajooSaath}, in
+  coflow scheduling have also exploited the spatial dimension to come
+  up with efficient coflow scheduling algorithm.}
+\fi
