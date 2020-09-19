@@ -166,7 +166,7 @@ prediction accuracy. Conversely, if the job-wise variations are small but
 the task-wise variation is large, \ie $\sigmanotsqrd <<
 \frac{\sigmaonesqrd}{m}$, then  history-based schemes will have better
 prediction accuracy. Second, while the accuracy of history-based schemes is
-fixed at $\sigmanotsqrd$, the accuracy of sampling-based scheme improves as $m$
+fixed at $\sigmanotsqrd$, the accuracy of sampling-based schemes improves as $m$
 increases. Thus, when we can afford the overhead of more samples, the
 sampling-based schemes become favorable. Our results from experimental
 data below will further confirm these intuitions.
@@ -253,8 +253,8 @@ we next measure the actual variations
 %  in average task runtimes for jobs across history ($\sigmanotsqrd$) and in task
 %  runtime across the tasks of the same job (${\sigmaonesqrd}$).
 in three production cluster traces, one from 2Sigma~\cite{2Sigma:website} and
-the other two, one release in 2011 and one in 2019, from
-Google~\cite{googleTraceGithub, googleClusterData2019}.
+two from Google~\cite{googleTraceGithub, googleClusterData2019},
+released in 2011 and in 2019, respectively.
 
 \if 0
 Several previous work have experimented to
