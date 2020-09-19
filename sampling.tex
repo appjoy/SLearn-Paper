@@ -10,10 +10,12 @@ key observations about distributed jobs running in shared clusters: (1) a
 distributed job has a spatial dimension, \ie it typically consists of many
 tasks; (2) all the tasks in the same phase of a job typically execute exactly
 the same code with the same settings~\cite{googleClusterData2011-2Schema,
-personalCommunication:MarkAstley}, and  differ in that they process different
-chunks of similarly sized data. \commentaj{Also, if there is a need to run different types
-of tasks with different resource requirements, they are executed as a separate
-jobs~\cite{googleClusterData2019Schema}.}
+personalCommunication:MarkAstley,googleClusterData2019Schema}, 
+and  differ in that they process different
+chunks of similarly sized data. 
+%   \commentaj{Also, if there is a need to run different types
+%   of tasks with different resource requirements, they are executed as a separate
+% jobs~\cite{googleClusterData2019Schema}.}
 Hence, it is likely that their runtime behavior
 will be statistically similar.
 
@@ -42,6 +44,14 @@ techniques, \ie relying on job properties to remain stationary over time.
 \subsection{Learning in Time vs. Learning in Space}
 \label{sec:comparison}
 
+Learning in space introduces two new challenges:
+%
+(1) its estimation can be affected by the variations of task runtime
+properties, \ie task skew;
+%
+(2) delaying scheduling the remaining tasks of a job till the completion of
+sampled tasks may potentially hurt the job's completion time.
+
 \begin{table}[tp]
 %\vspace{-0.05in}
 \caption{Comparison of learning in time and space of job runtime properties.}
@@ -67,21 +77,13 @@ techniques, \ie relying on job properties to remain stationary over time.
 \vspace{-0.1in}
 \end{table}
 
-Learning in space introduces two new challenges:
-%
-(1) its estimation can be affected by the variations of task runtime
-properties, \ie task skew;
-%
-(2) delaying scheduling the remaining tasks of a job till the completion of
-sampled tasks may potentially hurt the job's completion time.
-
 Table~\ref{table:proscons} summarizes the pros and cons of the two
 learning approaches along four dimensions:
 
 \begin{itemize}%[leftmargin=*]
 \item {\bf Applicability:} As discussed in \S\ref{sec:back:existing}, most history-based
-predictors cannot be used for jobs of a new category or for categories
-for which jobs are rarely executed.  In contrast, learning in space
+predictors cannot be used for the jobs of a new category or for categories
+for which the jobs are rarely executed.  In contrast, learning in space
 has no such limitation; it can be applied to any new job.
 \item {\bf Adaptiveness to change:} Furthermore, history-based predictors assume
 job runtime properties persist over time, which often does not hold, as discussed 
@@ -93,7 +95,7 @@ how the two approaches learn, \ie in space versus in time.
 The accuracy of history-based approaches is affected by how stable
 the job runtime properties persist over time, while that  of
 sampling-based approach is affected by the variation of the task runtime properties,
-\ie the level of task skew.
+\ie the extent of task skew.
 %  \questionaj{Should we add a briefly add here the intuitive argument as why
 %  ampling will work in task runtime skew? Similar to the one we added for 
 %  the coflow paper. I have written this in Appendix \S\ref{sec:appendixSkew}.}
