@@ -31,14 +31,15 @@ discuss their weaknesses.
 %This makes efficient cluster scheduling and meeting desired scheduling
 %objectives very crucial.
 
-Clusters are being shared among multiple users to execute diverse jobs. Such
+In both public and private clouds,
+clusters are typicalling shared among multiple users to execute diverse jobs. Such
 jobs typically arrive online and compete for shared resources. In order to best
 utilize the cluster and to ensure that jobs also meet their service level
-objectives, efficient job scheduling is essential. Since jobs arrive online,
+objectives (SLOs), efficient job scheduling is essential. Since jobs arrive online,
 their runtime characteristics are not known a priori. This lack of information
 makes it challenging for the scheduler to determine the right order for running
-the jobs that maximizes resource utilization and/or meets application service
-level objective (SLOs). Additionally, jobs have different SLOs. For some
+the jobs that maximizes resource utilization and/or meets application 
+SLOs. Additionally, jobs have different SLOs. For some
 meeting deadlines is important while for others faster completion or minimizing
 the use of networks is more important. Such a diverse set of objectives pose
 further challenges to effective job
@@ -52,7 +53,7 @@ morpheus, delay:eurosys10, cdef:atc18}.
 
 We consider big-data compute clusters running data-parallel frameworks
 such as Hadoop~\cite{hadoop:web}, Hive~\cite{hive:web},
-Dryad~\cite{dryad:eurosys2006}, 
+Dryad~\cite{dryad:eurosys2007}, 
 Scope~\cite{scope:2008},
 and Spark~\cite{spark:web} that run simple MapReduce
 jobs~\cite{mapreduce:osdi04} or more complex DAG-structured jobs, where each job
@@ -200,10 +201,11 @@ for minimizing the average completion time.
 \vspace{-0.1in}
 \end{table}
 
-The problem of learning runtime characteristics of jobs has been intensively
+In deed the problem of learning runtime characteristics of jobs has been intensively
 studied.  Cluster schedulers using various learning methods have been proposed
 \cite{corral, morpheus, shufflewatcher, 3Sigma, tetrisched,
-DontCryOverSpilledRecords, perforator:socc2016, Apollo:osdi2014, wsmith:IEEE98, stratus:socc2018, roughSetEstimation:IEEE:Shonali}.  All previous learning schemes
+DontCryOverSpilledRecords, perforator:socc2016, Apollo:osdi2014, wsmith:IEEE98, stratus:socc2018, roughSetEstimation:IEEE:Shonali}.  
+In essence, all previous learning schemes
 are {\em history-based}, \ie they learn job characteristics by observations
 made from the past job executions. In particular, existing history-based
 learning approaches can be broadly categorized into the following groups, as
@@ -304,17 +306,22 @@ JVuPredict~\cite{jamiasvu} uses a black-box approach to learn
 job properties. Instead of using execution history from the exact same jobs,
 it matches jobs on the basis of some common features such as application name,
 job name, the user who owns the job, and the resource requested by the job.
-Additionally, instead of using just one mathematical metric for estimating
-running times from the distribution, it uses multiple metrics, such as rolling
-average and median. In principle, this elaborate design of JVuPredict 
+Additionally, 
+% instead of using just one mathematical metric for estimating
+% running times from the distribution, 
+it uses multiple metrics, such as rolling
+average and median,
+in estimating running times from the distribution.
+In principle, this elaborate design of JVuPredict 
 revokes the reliance on recurring jobs, but it still depends on historical data.
 
 %\paragraph{Distribution based learning.}
-3Sigma~\cite{3Sigma} shares the two ideas of
-JVuPredict~\cite{jamiasvu}, \ie matching jobs on the basis of some
-common features and using multiple metrics,
-and hence is also applicable to non-recurring jobs.
-It introduces a new idea on prediction: instead of using point
+3Sigma~\cite{3Sigma} 
+%  shares the two ideas of
+extends JVuPredict~\cite{jamiasvu}
+% , \ie matching jobs on the basis of some common features and using multiple metrics,
+% and hence is also applicable to non-recurring jobs.
+by introducing a new idea on prediction: instead of using point
 metrics to predict runtimes, it uses full distributions of relevant
 runtime histories.
 \if 0
@@ -346,7 +353,7 @@ one or a few common features often does not work well.  The
 paper~\cite{3Sigma} reports that for over 23\% jobs, the prediction
 error is at least 100\% and for many jobs it is off by an order of
 magnitude. Such error in estimating a job's
-runtime affects all the jobs being scheduled around the same
+runtime can affect all the jobs being scheduled around the same
 time.
 
 %As a consequence, it has to rely
