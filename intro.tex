@@ -71,7 +71,7 @@ job scheduling.
 %
 The approach is motivated by the following key observations about
 distributed jobs running on shared clusters: (1) a job typically has a
-spatial dimension, \ie it typically consists of many tasks; and (2)
+{\em spatial dimension}, \ie it typically consists of many tasks; and (2)
 the tasks (in the same phase) of a job typically execute the same code
 and process different chunks of similarly sized
 data~\cite{googleClusterData2011-2Schema,
@@ -111,7 +111,8 @@ question by designing a generic scheduler that schedules jobs based on
 job runtime estimates to optimize a given performance metric, \eg
 average job completion time (JCT), and then plug into the scheduler
 different prediction schemes, in particular, learning in time and
-learning in space, to compare their effectiveness.
+learning in space, to compare their effectiveness
+using three production job traces.
 
 \if 0
   Second, scheduling pilot tasks first may elongate the JCT of the newly
@@ -179,8 +180,10 @@ properties online with high accuracy.
 
 \item Via quantitative, trace and experimental analysis, we demonstrate
   that \lTechnique can predict job runtime properties with much higher
-  accuracy than history-based schemes. {For the 2Sigma, Google 2011, and
-    Google 2019 cluster traces, the median prediction error are 18.98\%, 
+  accuracy than history-based schemes. {For the 2Sigma~\cite{2Sigma:website},
+ Google 2011~\cite{googleTraceGithub}, and
+    Google 2019~\cite{, googleClusterData2019}
+ cluster traces, the median prediction error are 18.98\%, 
 13.68\%, and 51.84\% for \lTechnique but 36.57\%, 21.39\%, and 71.56\% for the
     state-of-the-art history-based \primarybasepredict.}
 \item We show that learning job runtime properties by sampling
@@ -190,7 +193,7 @@ properties online with high accuracy.
   In particular, our extensive simulations and testbed experiments
   using a prototype on a 150-node cluster
   in Microsoft Azure
-  show that compared to the prior-art history based predictor, \slearn
+  show that compared to the prior-art history-based predictor, \slearn
   reduces the average JCT by 1.28$\times$, 1.56$\times$, and 1.32$\times$ for the
   2Sigma, Google 2011 and Google 2019 traces, respectively.
 \end{itemize}
