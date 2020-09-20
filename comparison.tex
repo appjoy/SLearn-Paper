@@ -457,11 +457,11 @@ $\frac{\sigmaone}{(\sqrt{0.05\times numberOfTasksInJob}\ )\times\mu}$.
 Fig.~\ref{fig:accuracy:trace_analysis_window:2Sigma:task_dur} and
 Fig.~\ref{fig:accuracy:trace_analysis_window:google11:task_dur} show the CDF of CoVs
 in task runtimes measured across space and across history for multiple history
-window sizes for the complete 2Sigma and Google traces, respectively.
+window sizes for the complete 2Sigma and Google 2011 traces, respectively.
 Table~\ref{table:accuracy:trace_analysis:covs} summarizes the result,
 where the CoVs across time correspond to the best history window size,
 \ie 30 days for the 2Sigma trace and 3 days for
-the Google trace.
+the Google 2011 trace.
 }
 Figure~\ref{fig:accuracy:trace_analysis_window:2Sigma:task_dur:scatter}
 visualizes the two CoVs for each of 70 randomly selected jobs from the 2Sigma trace in the order of
@@ -502,7 +502,7 @@ than 85\% of the jobs.
 \end{figure}
 
 We see that the P50 (P90) CoV across history is 0.63 (2.99) for the
-2Sigma trace and is 0.50 (2.87) for the Google trace.
+2Sigma trace and is 0.50 (2.87) for the Google 2011 trace.
 %      The high variability across history can be
 %      explained as follows. For the Google trace, more than 67\% of the jobs studied
 %      were non-recurring, \ie no exact same job was found for them in history, and
@@ -516,7 +516,7 @@ We see that the P50 (P90) CoV across history is 0.63 (2.99) for the
 %      The lack of a large number of recurring jobs in the histoy window in turn leads
 %      to high error in prediction.
 In contrast, the P50 (P90) CoV value across the task duration of the
-same job is much lower, 0.03 (0.45) for the Google trace and 0.12 (0.65) for the
+same job is much lower, 0.03 (0.45) for the Google 2011 trace and 0.12 (0.65) for the
 2Sigma trace.
 %
 % {For the 2Sigma (Google) trace, for more than 30\% of the
@@ -524,7 +524,7 @@ same job is much lower, 0.03 (0.45) for the Google trace and 0.12 (0.65) for the
   % for next 20\% it is somewhere between 10-4 (35-15). CoV across history is higher than CoV
 % across tasks only for 13\% (16\%) of the jobs.}
 %
-{For the 2Sigma (Google) trace, the CoV across history is higher than the CoV across
+{For the 2Sigma (Google 2011) trace, the CoV across history is higher than the CoV across
   tasks for 87\% (84\%) of the jobs.
   In particular, for more than 30\% of the jobs,
   the CoV across history is at least 10 (35) times higher than the CoV across tasks.
@@ -540,7 +540,7 @@ with 2Sigma {engineers}~\cite{personalCommunication:MarkAstley}.  }
 
 {Fig.~\ref{fig:accuracy:trace_analysis_window:google11:cpuUsage} and
 Fig.~\ref{fig:accuracy:trace_analysis_window:google11:diskIO} further show the
-CDF of CoVs for CPU usage and Disk IO time for the Google trace (such resource
+CDF of CoVs for CPU usage and Disk IO time for the Google 2011 trace (such resource
 usage is not available in the 2Sigma trace.).
 %\addaj{The CoVs here were also measured in the same way as for the task durations.}
 %  We use the same
@@ -559,8 +559,8 @@ observed over time.
 
 \begin{table}[tp]
 %\vspace{-0.05in}
-\caption{CoV in task runtime across time and across space for the Google and
-	the 2Sigma traces.}
+  \caption{CoV in task runtime across time and across space for the
+	the 2Sigmaa and Google 2011 traces.}
 \label{table:accuracy:trace_analysis:covs}
 \centering
 {\small
