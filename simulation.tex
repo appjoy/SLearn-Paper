@@ -496,50 +496,53 @@ can use this result somewhere as clusterG 2019 has very high error for both
 \fi
 
 
-\subsubsection{Intuitive explanation of speedup}
+\subsubsection{Intuitive Explanation of Speedups}
 \label{sec:sim:intuitionSpeedup}
 
-\begin{figure*}
+\begin{figure*}[tp]
 	\includegraphics[width=1.0\linewidth]{figures/simulation/2STrace-Trial.eps}
 	\caption{Correlation between load, \textit{resistance}, estimation error and speedup for 2STrace. \updated{16th Sep 2020}}
 	\label{figs:sim:intuitionSpeedup:allInOne}
 \end{figure*}
 
-\S\ref{sec:sim:numPilots} - \S\ref{sec:sim:averageJCT} explain better performance under 
-\slearn over \primarybase by experimental results. In this section, we provide
-an intuitive explanation of the improvement.
-Figure~\ref{figs:sim:intuitionSpeedup:allInOne} shows seven timeline values comparing
-\slearn and \primarybase as follows:
+% \S\ref{sec:sim:numPilots} - \S\ref{sec:sim:averageJCT} explain better
+% performance under \slearn over \primarybase by experimental results.
+In this section, we provide an intuitive explanation for \slearn's
+improvement over \primarybasepredict.
+Figure~\ref{figs:sim:intuitionSpeedup:allInOne} shows seven timeline
+values comparing \slearn and \primarybase for the 2STrace as follows:
 
 \begin{itemize}
-	\item The top curve shows the total workload arrived in the past 1000
-		seconds, in terms of execution duration, for the 2STrace. The
-		values are plotted in steps of 1000 seconds along the x-axis.
-		A unit along the y-axis is corresponding to the workload which
-		needs 1000 seconds of the entire cluster's compute capacity.
-	\item The next three curves show the \resistance faced by jobs under
-		\oracle, \primarybase and \slearn, respectively.  Where
-		\resistance for a job is defined as the amount of higher
-		priority workload existing at the time of its arrival
-		\comment{including} the sum of the remaining duration of the
-		already scheduled tasks. A unit along the y-axis for these
-		curves is also corresponding to the workload which needs 1000
-		seconds of the entire cluster's compute capacity. For wide
-		jobs, under \slearn we show the value corresponding to the time
-		when the job's size estimation is over and it has been placed
-		in its estimated priority queue. The values are plotted along
-		the x-axis corresponding to each job's arrival time.
-	\item The next two curves correspond to the percentage error in
-		\primarybasepredict and \slearn respectively.  They show signed
-		error which are capped at 1000, \eg a value of -20 on error
-		curves means the job was estimated to be 20\% smaller and a
-		value of 1000 means job was estimated at least 10 $\times$
-		larger. The values are plotted along the x-axis corresponding
-		to each job's arrival time.
-	\item The bottom curve shows the job speedup of \slearn over
-		\primarybase.  Negative values mean the job slowed down under
-		\slearn compared to \primarybase. The values are plotted along
-		the x-axis corresponding to each job's arrival time.\\
+\item The top curve shows the total workload arrived in the past 1000
+  seconds, in terms of execution duration, for the 2STrace. The values
+  are plotted in steps of 1000 seconds along the x-axis.  A unit along
+  the y-axis corresponds to the workload that needs 1000 seconds
+  of the entire cluster's compute capacity.
+\item The next three curves show the \resistance faced by newly arrived jobs under
+	\oracle, \primarybase and \slearn, respectively, where
+	\resistance for a job is defined as the amount of higher
+	priority workload existing at the time of its arrival
+	{including} the remaining duration of the
+	already scheduled tasks. A unit along the y-axis for these
+	curves also corresponds to the workload that needs 1000
+	seconds of the entire cluster's compute capacity. For wide
+	jobs, under \slearn we show the value corresponding to the time
+	when the job's size estimation is over and it has been placed
+	in its estimated priority queue. \comment{The values are plotted along
+	the x-axis corresponding to each job's arrival time.}
+\item The next two curves correspond to the percentage error in
+	\primarybasepredict and \slearn, respectively.  They show signed
+	error which are capped at 1000, \eg a value of -20 on error
+	curves means the job was estimated to be 20\% smaller and a
+	value of 1000 means job was estimated at least 1000\%
+	larger. The values are plotted along the x-axis corresponding
+	to each job's arrival time.
+\item The bottom curve shows the job speedup of \slearn over
+	\primarybase.  Negative values mean the job slowed down under
+	\slearn compared to \primarybase. The values are plotted along
+	the x-axis corresponding to each job's arrival time.
+        \commentPsi all values are above 1 or below -1???}
+          
 %	\questionaj{Should we also add speedup of \slearn vs. \oracle and
 		%	\primarybase vs. \oracle. If yes, should we then move
 		%	the \primarybase vs. \slearn speedup curve.}
