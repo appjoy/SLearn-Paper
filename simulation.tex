@@ -389,6 +389,30 @@ five baseline schemes defined in \S\ref{sec:design:baselines}.
 %  All experiments use the default parameters discussed in the setup, including
 %  $K, E, S$, unless otherwise stated.
 
+\begin{table}[tp]
+  \caption{Percentage of the wide jobs that had correct queue assignment \updated{all - 16th Sep 2020 TableStructure - 10 Jul 2020} \comment{last columnshould be for Point-EST????}
+    }
+\vspace{-0.1in}
+\label{table:sim:correctQueue}
+  \centering
+      {\small
+	\begin{tabular}{|c|c|c|c|c|c|} 
+	  \hline
+		Prediction&	\slearn &\primarybasepredict &\oracle\\  
+		%Prediction&	\slearn &\primarybasepredict &\pointestimator\\  
+		Technique&&&\\
+	  \hline
+		2STrace &89.09\%&73.84\%&100\%\\
+		GTrace11 &86.45\%&76.20\%&100\%\\
+		GTrace19 &73.96\%&58.07\%&100\%\\
+		%Queue Assign-&89.38\%&68.39 (73.85)\%&61.02 (62.8)\%\\
+		%ment Accuracy&&&\\
+	  \hline
+	\end{tabular}
+      }
+\vspace{-0.1in}
+\end{table}
+
 Fig.~\ref{fig:sim:jctOthers:2STrace}
 shows the results for 2STrace. We make the following observations.
 (1) \oracle predicts with 100\% accuracy and thus all the jobs are placed in
@@ -415,35 +439,12 @@ Again, this is because \slearn estimates runtimes with higher accuracy.
 %   \primarybase, which exploits complete runtime distribution, can predict with
 %   better accuracy than \pointestimator.
 %
-\begin{table}[tp]
-  \caption{Percentage of the wide jobs that had correct queue assignment \updated{all - 16th Sep 2020 TableStructure - 10 Jul 2020} \comment{last columnshould be for Point-EST????}
-    }
-\vspace{-0.1in}
-\label{table:sim:correctQueue}
-  \centering
-      {\small
-	\begin{tabular}{|c|c|c|c|c|c|} 
-	  \hline
-		Prediction&	\slearn &\primarybasepredict &\oracle\\  
-		%Prediction&	\slearn &\primarybasepredict &\pointestimator\\  
-		Technique&&&\\
-	  \hline
-		2STrace &89.09\%&73.84\%&100\%\\
-		GTrace11 &86.45\%&76.20\%&100\%\\
-		GTrace19 &73.96\%&58.07\%&100\%\\
-		%Queue Assign-&89.38\%&68.39 (73.85)\%&61.02 (62.8)\%\\
-		%ment Accuracy&&&\\
-	  \hline
-	\end{tabular}
-      }
-\vspace{-0.1in}
-\end{table}
-
 To illustrate \slearn's high prediction accuracy,
 we show in Table~\ref{table:sim:correctQueue} the fraction of wide jobs that were
 placed in correct queues by \slearn, \primarybasepredict and \pointestimator.
 We observe that \slearn assigns 89.38\% of the wide jobs to correct queues but
 \primarybasepredict and \pointestimator assign only 68.39\% and 67.14\% jobs correctly,
+\comments[the numbers are not the same as n Table 7???}
 respectively.
 %
 (4) Compared to \las, \slearn achieves an average JCT speedup of
