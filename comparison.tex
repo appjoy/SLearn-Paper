@@ -658,9 +658,12 @@ the same as ???. We then randomly selected 1250 jobs as the 2STrace.
   \fi
 
 
-\addaj{Through the entire filtering process we made sure, by appropriately compressing
-the arrival time, that the average cluster load remains 1.0. This is necessary
-to avoid persistant queueing.}
+\comment{Finally, for each sampled job tacce, we appropriately compressed
+    the arrival time of the jobs so that the average cluster load
+    remains 1.0, which we assumed is the case in the orignal trace
+    as otherwise there would be persistent job queue build-up.
+%    is necessary to avoid persistant queueing.
+  }
 
 \addaj{\textbf{Pretraining history based predictors:} Since the experimental traces
 are only 1250 jobs, the history based predictors needs to be pretrained. To
