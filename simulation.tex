@@ -484,6 +484,7 @@ outweighs its runtime overhead from sampling, and as a result achieves much
 lower job completion time than history-based predictors and the LAS policy for
 the three production workloads.
 
+\if 0
 \commentaj{Cluster G from 2019 has very high error. However, that is not the
 case with all the cluster of 2019. I tried with other clusterH with all tier
 jobs. That also has a speed up 1.25$\times$ and P50 (P90) error for \slearn is
@@ -492,6 +493,8 @@ beb-tier jobs the speedup is 1.9$\times$ and P50 (P90) error for \slearn is
 7.65 (58.68)\% and for \primarybasepredict it is 28.72 (144.01)\%. I think we
 can use this result somewhere as clusterG 2019 has very high error for both
 \slearn and \primarybasepredict.}
+\fi
+
 
 \subsubsection{Intuitive explanation of speedup}
 \label{sec:sim:intuitionSpeedup}
