@@ -36,7 +36,7 @@
   \EndIf
 \EndProcedure
 \Procedure {UpdateStatsOnJobCompletion}{Job j}
-  \State sp = j.sp  \Comment{Get j's sampling percentage.}
+  \State sp = j.sp  \Comment{Get j's sampling ratio.}
   \State nrmlzdJct = j.jct  \Comment{Get j's normalized JCT.}
   \State UpdateScoresMap(sp, nrmlzdJct)
 \EndProcedure
@@ -63,12 +63,12 @@
 \end{figure}
 \end{center}
 
-\textbf{Objective:} Calculate sampling percentage that is expected to yeild
+\textbf{Objective:} Calculate sampling ratio that is expected to yeild
 best in runtime and prediction accuracy tradeoff in the current system
 conditions.
 \textbf{Defination of variables and abbreviations} in pseudocode in
 fig.~\ref{fig:design:AdaptiveSamplingAlgo}: \textbf{$T$} - Maximum number of
-past jobs to keep in record corresponding to any sampling percentage.
-\textbf{$SP$ or $sp$} - this is an abbreviation to denote sampling percentage. 
-\textbf{Output:} \textit{sp}, \ie the best sampling percentage to be used at
+past jobs to keep in record corresponding to any sampling ratio.
+\textbf{$SP$ or $sp$} - this is an abbreviation to denote sampling ratio. 
+\textbf{Output:} \textit{sp}, \ie the best sampling ratio to be used at
 this instance.
