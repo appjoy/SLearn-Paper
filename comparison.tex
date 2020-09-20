@@ -331,7 +331,7 @@ across space as follows.
 runtime for a job across the history, we follow the following prediction
 mechanism defined in 3Sigma~\cite{3Sigma}.
 
-As discussed in \S\ref{sec:back:existing}, 3Sigma-Predict~\cite{3Sigma} uses
+As discussed in \S\ref{sec:back:existing}, 3Sigma~\cite{3Sigma} uses
 multiple features to identify a job and predicts its runtime using the feature
 that gives the least prediction error in the past. We include all six features
 used in 3Sigma:
@@ -366,8 +366,8 @@ For this reason, we optimized 3Sigma
 by finding and using the history length that gives the least variation.
 Specifically, we define the length of history based
 on a window size $w$, \ie the number of past consecutive days.
-In particular, when we calculate the CoVs for a job on day $i+w$,
-the history window starts from day $i$ to day $i+w-1$.
+%  In particular, when we calculate the CoVs for a job on day $i+w$,
+% the history window starts from day $i$ to day $i+w-1$.
 In our analysis below, we vary $w$ among 3, 7, and 14 for the Google trace and 15, 30, 60 and
 120 for the 2Sigma trace.
 \rm{We start the analysis on the day after the largest window value
