@@ -597,46 +597,66 @@ runtimes.
 
 %The experimental setup used for this comparison is described below.
 \paragraph{Workload characteristics.}
-\addaj{Starting with the production cluster traces described in
-\S\ref{sec:accuracy:trace}, following 3Sigma~\cite{3Sigma} we filtered out 3
-experimental traces with roughly 1250 jobs each.  We call the trace extracted
-from 2Sigma~\cite{2Sigma:website} as 2STrace, from Google 2011
-version~\cite{googleTraceGithub} as GTrace11 and from Google 2019
-version~\cite{googleClusterData2019} as GTrace19.}
+As in 3Sigma~\cite{3Sigma},
+we filtered out 3
+experimental traces with roughly 1250 jobs each
+from the three production cluster traces described in
+\S\ref{sec:accuracy:trace}.
+We denote the traces extracted
+from 2Sigma~\cite{2Sigma:website}, Google 2011 version~\cite{googleTraceGithub}
+and Google 2019 version~\cite{googleClusterData2019} 
+as 2STrace, GTrace11 and GTrace19, respectively.
 
 \addaj{The 2Sigma trace has many wide jobs and many of them are wider than the number
 of nodes (441, each with 24 cores) in the original cluster. Since our
-experimental cluster has only 150 single core nodes so for extracting the
-2STrace we recalibarated the job widths.  The original 2Sigma trace doesn't
+experimental cluster has only 150 single core nodes,
+in extracting 2STrace, 
+we recalibarated the job widths.  The original 2Sigma trace does not
 have exact information on resource usage so we assumed that each task uses 1
 core. With this assumption we calculated the effective number of cores per
-machine such that the average workload for the original trace remains 1.0 (This
-ensures no persistant queueing in the cluster). We got the effective number of
-cores per machine as 5.49.  Now using this effective cluster size we randomly
-dropped some tasks from each job the ratio of job width to cluster size remains
-same. We then randomly selected ~1250 jobs to get the 2STrace.}
+machine to be 5.49 in order for
+the average workload ofthe original trace to remain 1.0 (This
+ensures no persistant queue build-up in the cluster). 
+Using this effective cluster size, we randomly
+dropped some tasks from each job so that the ratio of job width to cluster size remains
+the same as ???. We then randomly selected 1250 jobs as the 2STrace.
+}
 
-\addaj{For extracting GTrace11 and GTrace19 we used the following procedure.
-Based on a suggestion from a Google engineer,  we dropped single task jobs from
-both the google traces. These jobs make less than 1\% of
-the total workload. We also got to know that most of these jobs are test jobs
-and according to the engineer they care least about the performance of such jobs.
-The google traces didn't have much wide jobs and the original clusters are very
-wide, ~12.5K machines. So, we simply dropped jobs with more than 150 tasks.
-The 2019 google trace also had information about the job tier, \ie batch or
-production etc. Since, SLO for batch tier jobs is minimizing the average
-completion time so we choose only batch tier jobs from 2019 trace. We then
-randomly selected ~1250 jobs. Also, the google 2019 trace has data from eight
-different cells located in 8 different locations. In the private communication
-the engineer also told us that, \textit{at Google, distribution of the job
-properties is also a bit dependent on social behaviour} and it is hard to find
-an average cell. So, out of the eight clusters we choose the \textit{clusterG}
-as it is located in Singapore\cite{googleClusterData2019Schema}. We did this
-purposely, to diversify the trace locations, as the 2Sigma and Google 2011
-traces are from the US. Another reason to choose the \textit{clusterG} from
-2019 trace is that, as shown in the trace analysis
-paper~\cite{borgTraceAnalysis2019}, it has highest machine utilization and the
-2011 trace has machine utilization lower than any of the clusters in 2019.}
+\addaj{To extract GTrace11 and GTrace19, we followed the following process.
+  % Based on a suggestion from a Google engineer,
+  First, we dropped single
+ task jobs from both Google traces for two
+  reasons~\cite{personalCommunication:Nan}: (1) these jobs make less
+  than 1\% of the total workload, (2) most of these jobs are test jobs
+  their performance are not cosidered important.
+  %
+  Second, since the Google traces do not have
+  much wide jobs and the original clusters are very wide, with ~12.5K
+  machines, we simply dropped jobs with more than 150 tasks.
+  We then randomly selected ~1250 jobs from the Google 2011 trace to create GTrace11.
+
+  To extract GTrace19, we added a few more steps.  First, the Google
+  2019 trace had information about the job tier, \eg batch or
+  production. Since the SLO for batch tier jobs is to minimize the
+  average completion time, we chose batch tier jobs from the 2019
+  trace.  Second, the Google 2019 trace has data from eight different
+  cells located in 8 different locations. From private
+  communication~\cite{personalCommunication:Nan} we learned that {at
+    Google, the job properties vary with the social behaviour of
+    different locations and it is hard to identify an average cell.
+    Given we already had the two two traces from the US, we chooe the
+    \textit{clusterG} in the Google 2019 trace which is located in
+    Singapore~\cite{googleClusterData2019Schema} as our third trace to
+    diversity the loctions of our trace collection.  }
+
+  \if 0
+  Another reason to choose the
+  \textit{clusterG} from 2019 trace is that, as shown in the trace
+  analysis paper~\cite{borgTraceAnalysis2019}, it has highest machine
+  utilization and the 2011 trace has machine utilization lower than
+  any of the clusters in 2019.
+  \fi
+
 
 \addaj{Through the entire filtering process we made sure, by appropriately compressing
 the arrival time, that the average cluster load remains 1.0. This is necessary
