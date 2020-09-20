@@ -7,13 +7,13 @@
 
 \paragraph{Robustness to task skew.} There are two factors
 that can potentially cause high variations in the runtime properties
-of tasks (\textit{skew}) of a job: (1) Heterogeneity in cluster; (2)
-Computation skew.
+of tasks (\textit{skew}) of a job: heterogeneity in cluster and
+computation skew.
 {
-Both traces used in our analysis (\S\ref{sec:accuracy:trace}) and experiments
+The three traces used in our analysis (\S\ref{sec:accuracy:trace}) and experiments
 (\S\ref{sec:study}) are from production datacenter traces, out of
-which, the Google trace \cite{googleTraceGithub} was collected from a
-heterogeneous cluster which already includes task skew due to cluster
+which, the Google traces were collected from 
+heterogeneous clusters which already include task skew due to cluster
 heterogeneity,
 % Furthermore, our experimental analysis for prediction accuracy in
 % \S\ref{sec:accuracy:experiment} and end-to-end performance analysis in
@@ -21,7 +21,7 @@ heterogeneity,
 % compared to learning in time for the trace.
 % Additionaly, previous work like LATE~\cite{late:osdi08} have established mechanisms to tame skew
 %  in highly heterogeneous environments.
-and both traces {already} include computation skew observed in the
+and all traces {already} include computation skew observed in 
 real applications.
 %
 \if 0
@@ -48,7 +48,7 @@ end-to-end performance (\S\ref{sec:study:sim}).
 There are several motivations for exploring combining history-
 and sampling-based learning. 
 %
-For instance, for mixed workloads, sampling-based learning can be used
+(1) For mixed workloads, sampling-based learning can be used
 to estimate the mean task length to minimize the total completion
 time for jobs without deadlines, while history-based learning can be
 used to estimate the max task length for deadline jobs, if it
@@ -59,13 +59,13 @@ sampling-based learning but without incurring any runtime overhead.
 % without any knowledge about the task length distribtuion, the
 % prediction accuracy for max task length is about the same for both
 % history and sampling-based schemes. However, since 
-Second, history-based learning can be used to establish a prior
+(2) History-based learning can be used to establish a prior
 distribution, and sampling-based approach can be used to refine the
 posterior distribution. Such a combination may potentially be more accurate
 than using either history or sampling alone. For example,
 knowing the distribution of task lengths can help develop better
 max task length predictors.
-Finally, though not seen in the two production traces used in our study,
+(3) Finally, though not seen in the production traces used in our study,
 in case task-wise variation and job-wise variation fluctuate, adaptively switching
 between the two prediction schemes may help.
 
