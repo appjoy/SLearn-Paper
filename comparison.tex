@@ -813,7 +813,7 @@ affected by the variance (\S\ref{sec:accuracy:quantity}).
 a job scheduling algorithm, \eg SJF, 
   %  we measured the chances of pairwise order of wide jobs getting
   % swapped from their actual order. \ie
-we sorted jobs in the increasing order of their sizes, and measured how often
+we sorted the jobs in the increasing order of their sizes, and measured how often
 the order of each pair of jobs becomes flipped due to incorrect job size
 estimation error.  Table~\ref{table:accuracy:trace_analysis:fliprate} shows the
 results.  We observe that for the 2STrace, GTrace11, and GTrace19, 23.71\%,
@@ -856,4 +856,4 @@ only 8.80\%, 13.06\%, and 19.47\% are flipped by \name, respectively.
 In summary, the above quantitative, trace-based and experimental analysis
 demonstrate that a sampling-based scheme can predict job runtime
 characteristics with considerably higher accuracy than
-history-based predictors.
+a state-of-the-art history-based predictor.
