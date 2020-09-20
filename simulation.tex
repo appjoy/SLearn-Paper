@@ -158,7 +158,7 @@ We could not evaluate \slearn using the Mustang and Trinity traces released
 in~\cite{workloadDiversity:atc18} as they do not contain information about
 individual task runtimes.
 %\commentaj{Leaving a place holder here for why not google 2019 trace if not used finally.}
-\subsubsection{Impact of Number of Pilot Tasks}
+\subsubsection{Effectiveness of Adaptive Sampling}
 \label{sec:sim:numPilots}
 
 \begin{table}[tp]
@@ -213,16 +213,17 @@ number for sampling tasks is increased. For 5\% tasks, P50 prediction error
 (50PE) is 7.85\%; for 10\% it is 6.09\%; and for 20\% it is 4.26\%}
 \fi
 
-In this experiment we evaluate the effectiveness of our adaptive algorithm for
-sampling \S\ref{sec:design:namepredict}. We compare average JCT speedup and P50 speedup
-under the adaptive algorithm with those under the fixed sampling percentage
-algorithm. We vary the fixed sampling percentage from 1 to 5 and 10. The
-adaptive sampling algorithm leads to the best speedups for the 2STrace and
-GTrace19 and is only \~1\% worse then the best for
-the GTrace11.  However, a key thing to note is that the adaptive algorithm
-doesn't provide the best prediction accuracy. This shows that the adaptive
-algorithm effectively balances the tradeoff between prediction accuracy and
-sampling time. 
+In this experiment, we evaluate the effectiveness of our adaptive
+algorithm for task sampling. We compare average JCT speedup and P50
+speedup under the adaptive algorithm with those under fixed sampling
+ratio. We vary the fixed sampling ratio from 1\% to 5\% and 10\%.
+Table~\ref{table:sim:numPilots:2STrace} shows that 
+the adaptive sampling algorithm leads to the best speedups for the 2STrace
+and GTrace19 and is only \~1\% worse then the best for the GTrace11.
+However, a key thing to note is that the adaptive algorithm doesn't
+provide the best prediction accuracy. This shows that the adaptive
+algorithm effectively balances the tradeoff between prediction
+accuracy and sampling time.
 
 \if 0
 We start by evaluating the impact of the number of pilot tasks in \slearn.  In
