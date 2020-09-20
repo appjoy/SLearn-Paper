@@ -73,14 +73,15 @@ time sharing assigned to individual priority queues decrease exponentially by a
 factor of 10.
 Previous work (\eg~\cite{aalo:sigcomm15}) and our own evaluation have shown the
 scheduling results are fairly insensitive to these configuration parameters. We
-omit the sensitivity study here due to page limit.
+omit their sensitivity study here due to page limit.
 % The default inter-job scheduling policy is SJF.
 %In \slearn, by default the number of pilot tasks assigned to wide jobs is
 %$max(1, ceil(0.05 \cdot S))$, where $S$ is the number of tasks,
-\slearn, assigns the number of pilot tasks assigned to wide jobs using the
-adaptive algorithm described in \S\ref{sec:design:namepredict}, and the threshold for thin
-jobs is set to \thinLimit. We evaluate the sensitivity of scheduling results to
-these parameters in \S\ref{sec:sim:numPilots} and \S\ref{sec:sim:thin}.
+\slearn assigns the number of pilot tasks assigned to wide jobs using
+the adaptive algorithm described in \S\ref{sec:design:namepredict}
+and the threshold for thin jobs is set to \thinLimit.
+We evaluate the effectiveness of adaptive sampling
+in \S\ref{sec:sim:numPilots} the sensitivity to thinLimit in \S\ref{sec:sim:thin}.
 
 \if 0
 In order to achieve accurate replication of \primarybasepredict we, discussed
