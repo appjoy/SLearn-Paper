@@ -633,7 +633,8 @@ order for the average workload of the original trace to remain 1.0
 this effective cluster size, we randomly dropped some tasks from each
 job so that the ratio of job width 
 to cluster size in 2STrace on our 150-node clusetr remains the same as
-in the original 2Sigma trace then randomly selected 1250 jobs as the 2STrace.
+in the original 2Sigma trace then randomly selected 1250 jobs from
+the remaining jobs as the 2STrace.
 \fi
 }
 
@@ -648,7 +649,8 @@ in the original 2Sigma trace then randomly selected 1250 jobs as the 2STrace.
   Second, since the Google traces do not have
   much wide jobs and the original clusters are very wide, with ~12.5K
   machines, we simply dropped jobs with more than 150 tasks.
-  We then randomly selected ~1250 jobs from the Google 2011 trace to create GTrace11.
+  We then randomly selected 1250 jobs from the remaining jobs in
+  the Google 2011 trace to create GTrace11.
 
   To extract GTrace19, we added a few more steps.  First, the Google
   2019 trace had information about the job tier, \eg batch or
@@ -659,7 +661,7 @@ in the original 2Sigma trace then randomly selected 1250 jobs as the 2STrace.
   communication~\cite{personalCommunication:Nan} we learned that {at
     Google, the job properties vary with the social behaviour of
     different locations and it is hard to identify an average cell.
-    Given we already had the two two traces from the US, we chooe the
+    Given we already have two other traces from the US, we chose the
     \textit{clusterG} in the Google 2019 trace which is located in
     Singapore~\cite{googleClusterData2019Schema} as our third trace to
     diversity the loctions of our trace collection.  }
@@ -684,8 +686,8 @@ in the original 2Sigma trace then randomly selected 1250 jobs as the 2STrace.
 % \addaj{\textbf{Pretraining history based predictors:} Since the experimental traces
 % are only 1250 jobs, the history based predictors needs to be pretrained.
 Finally, we followed the same process as in~\cite{3Sigma}
-To extract pre-training jobs for 3Sigma,
-we divided each original traces in chronological
+to extract pre-training jobs for 3Sigma,
+we divided each original trace in chronological
 order in two halves, and selected "history" from the first
 half and the execution trace defined above from the second half.
 
