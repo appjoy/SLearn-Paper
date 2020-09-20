@@ -286,19 +286,22 @@ A key question about sampling-based learning is whether sampling pilot tasks
 first will cause the remaining tasks of a job to wait too long, thus affecting
 its JCT.  To answer this question, we next measure and compare the {\em
 normalized waiting time} of jobs, calculated as the average waiting time for
-each of its tasks divided by job total runtime, under different learning
+each of its tasks divided by the total job runtime, under different learning
 schemes.
 %  We compare the job waiting times under \slearn with that under
 %  \primarybasepredict.
 
-Figure~\ref{fig:sim:waitingTimes:2STrace:cdf} shows the CDF of normalized
-waiting times for \slearn and \primarybasepredict for  2STrace.  Despite the
-sampling overhead, \slearn has considerably lower job waiting time.  In
-particular, 40.95\% of all jobs (43.56\% of all the wide jobs) incurred
-lower average task waiting time when scheduled under \slearn than under
-\primarybasepredict.  The lower waiting time comes from higher estimation
-accuracy of \slearn: jobs are scheduled in a better order, and they finish
-faster and incur less delay on other jobs. \questionaj{Will it be better to show max waiting time instead of average?}
+Figure~\ref{fig:sim:waitingTimes:2STrace:cdf} shows the CDF of
+normalized job waiting times for \slearn and \primarybasepredict for
+2STrace.  Despite the sampling overhead, \slearn has considerably
+lower job waiting time.  In particular, 40.95\% \comment{this looks bad???}
+  of all jobs (43.56\%
+of all the wide jobs) incurred lower job waiting time when scheduled
+under \slearn than under \primarybasepredict.  The lower waiting time
+comes from higher estimation accuracy of \slearn: jobs are scheduled
+in a better order, and they finish faster and incur less delay on
+other jobs.
+% \questionaj{Will it be better to show max waiting time   instead of average?}
 %  (2) In a busy cluster, not all the jobs are scheduled
 %  immediately upon their arrival and they wait anyway. By sampling a small
 %  fraction of tasks, the waiting times of other jobs are not elongated much.
