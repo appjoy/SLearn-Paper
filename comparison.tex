@@ -665,11 +665,13 @@ the same as ???. We then randomly selected 1250 jobs as the 2STrace.
 %    is necessary to avoid persistant queueing.
   }
 
-\addaj{\textbf{Pretraining history based predictors:} Since the experimental traces
-are only 1250 jobs, the history based predictors needs to be pretrained. To
-extract the pre-training jobs we divided the original traces in chronological
-order. Following 3Sigma~\cite{3Sigma}, we selected "history" from the first
-part and the execution traces, defined above, from the later.}
+% \addaj{\textbf{Pretraining history based predictors:} Since the experimental traces
+% are only 1250 jobs, the history based predictors needs to be pretrained.
+Finally, we followed the same process as in~\cite{3Sigma}
+To extract pre-training jobs for 3Sigma,
+we divided each original traces in chronological
+order in two halves, and selected "history" from the first
+half and the execution trace defined above from the second half.
 
 \if 0
 \paragraph{Workload characteristics.}
