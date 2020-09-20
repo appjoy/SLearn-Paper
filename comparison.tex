@@ -796,15 +796,18 @@ but 552.03 (81.35)\%} for \primarybasepredict.
 
 % These results support the conclusion of the quantitative and the trace analysis. 
 
-Compared to GTrace,  for 2STrace,
-the predictor error is higher for both history-based and sampling-based
-prediction. This is because
-compared to GTrace, the 2STrace has higher CoV values for
-the average task runtimes, both across the history and across the tasks of
-the same job (Table~\ref{table:accuracy:trace_analysis:covs}). This result
-also confirms that the prediction accuracy of both schemes are directly affected by 
-the variance (\S\ref{sec:accuracy:quantity}).
-
+We observe that the predictor error for 2STrace is higher than for
+GTrace11
+% which in turn is higher than forGTrace11
+for both history-based and sampling-based prediction.  This is because
+the 2STrace has higher CoV values for the average task runtimes, both
+across the history and across the tasks of the same job
+(Table~\ref{table:accuracy:trace_analysis:covs}). This result also
+confirms that the prediction accuracy of both schemes are directly
+affected by the variance (\S\ref{sec:accuracy:quantity}).
+\comment{GTrace19 has the highest prediction errors, though we could
+  not analyze its job CoV values due to lack of job information
+  (\S\ref{sec:accuracy:trace}).
 
 {To measure the impact of \primarybasepredict's high estimation error in
 a job scheduling algorithm, \eg SJF, 
