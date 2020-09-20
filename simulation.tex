@@ -553,9 +553,9 @@ demonstrate intuitively.  The values on the \resistance curve indicate the
 amount of workload which will be scheduled before the arriving job gets to run.
 So, a job's completion time is roughly proportional to the \resistance it sees
 upon arrival.  The \resistance, in turn, depends on the recently arrived
-workload and the prediction error. It is obvious that if more workload has
-arrived in the recent past, before a job's arrival, it is highly likely that
-the job will face higher \resistance.  More importantly, when the job is
+workload and the prediction error. If more workload has
+arrived in the recent past, it is likely that
+a newly arrived job will face higher \resistance.  More importantly, when the job is
 estimated larger than its usual size, it may be misplaced in a lower priority
 queue. If the error is more than 1000\% then the job will definitely be placed
 in a lower priority queue. In such cases, the job will likely face higher
