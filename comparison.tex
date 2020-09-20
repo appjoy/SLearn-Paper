@@ -607,19 +607,32 @@ from 2Sigma~\cite{2Sigma:website}, Google 2011 version~\cite{googleTraceGithub}
 and Google 2019 version~\cite{googleClusterData2019} 
 as 2STrace, GTrace11 and GTrace19, respectively.
 
-\addaj{The 2Sigma trace has many wide jobs and many of them are wider than the number
-of nodes (441, each with 24 cores) in the original cluster. Since our
-experimental cluster has only 150 single core nodes,
-in extracting 2STrace, 
-we recalibarated the job widths.  The original 2Sigma trace does not
-have exact information on resource usage so we assumed that each task uses 1
-core. With this assumption we calculated the effective number of cores per
-machine to be 5.49 in order for
-the average workload ofthe original trace to remain 1.0 (This
-ensures no persistant queue build-up in the cluster). 
-Using this effective cluster size, we randomly
-dropped some tasks from each job so that the ratio of job width to cluster size remains
-the same as ???. We then randomly selected 1250 jobs as the 2STrace.
+{
+  % Since the 2Sigma trace has many wide jobs that are wider than the number
+  Since the original cluster from whre the 2Sigma tracce was collected 
+(441 nodes, each with 24 cores) is much larger than
+our experimental cluster (150 single-core nodes),
+in extracting 2STrace, we resized the job widths to preserve
+the job width to cluster size ratio.
+In particular, 
+we randomly dropped some tasks from each
+job so that the ratio of each job's width 
+to size of our 150-node clusetr remains the same as its job width
+in the original 2Sigma trace to the orignal cluster size,
+and then randomly selected 1250 jobs as the 2STrace.
+\if 0
+Since the original 2Sigma trace does not specify
+how many cores were used by each job task,
+we assumed that each task uses 1 core, same as in~cite{3Sigma}.
+With this assumption,
+we calculated the effective number of cores per machine to be 5.49 in
+order for the average workload of the original trace to remain 1.0
+(This ensures no persistant queue build-up in the cluster).  Using
+this effective cluster size, we randomly dropped some tasks from each
+job so that the ratio of job width 
+to cluster size in 2STrace on our 150-node clusetr remains the same as
+in the original 2Sigma trace then randomly selected 1250 jobs as the 2STrace.
+\fi
 }
 
 \addaj{To extract GTrace11 and GTrace19, we followed the following process.

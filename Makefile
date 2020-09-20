@@ -7,8 +7,7 @@ LDFLAGS = -lm
 	$(CC) -o $@ $(CFLAGS) $< $(LDFLAGS)
 
 
-all: 	paper cleanother
-
+all: 	paper
 
 paper: paper.tex
 	pdflatex --shell-escape paper
