@@ -14,8 +14,6 @@ paper: paper.tex
 	pdflatex --shell-escape paper
 	pdflatex paper
 	cp paper.pdf next.pdf
-	scp next.pdf nescafe.ecn.purdue.edu:/data/ajajoo/Desktop/Research/jobScheduling/overleaf-slearn-paper/
-	scp next.pdf min.ecn.purdue.edu:/home/min/a/ajajoo/figuresToDisplay/
 
 #	scp paper.pdf nescafe:~/Desktop/CN18-paper.pdf
 #	gnome-open paper.pdf >out.out 2>err.err 
@@ -53,7 +51,7 @@ clean: cleanother cleanbib
 
 cleanother:
 	rm -rRf *.dvi *.aux *.blg *.log *.ps *~ paper.out
-	
+
 cleanbib:
 	rm -rRf *.bbl
 
