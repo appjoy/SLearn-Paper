@@ -301,23 +301,27 @@ contains approximately 0.4 million jobs.  Table \ref{table:traceSummary}
 summarizes the information available in the traces that are used in our
 analysis.
 
-Also, Google has publicly released two sets of traces, one
-collected in May 2011 and another in May 2019~\cite{googleTraceGithub,
-googleClusterData2019}.  The traces have information collected over a period of
-29 (31) days from 1 (8) Borg~\cite{borg} cells for the 2011 (2019) trace and
-are released in csv (bigquery) format.  The machines  are highly heterogeneous;
-they belong to at least three different platforms which use different
-micro-architectures and/or memory technologies~\cite{workloadDiversity:atc18},
-and according to~\cite{googleClusterData2011-2Schema}, the machines in the same
-platform can have substantially different clock rates, memory speed, and core
-counts.  (The trace does not contain actual machine properties. Other details
-can be found in~\cite{googleClusterData2011-2Schema, googleClusterData2019}).
-As mentioned in the trace analysis paper~\cite{borgTraceAnalysis2019}, 2019
-trace is very large and has 2.8 TiB in compressed form. Hence, to made it
-practical to be analyzed they made it available via \textit{bigquery}
-~\cite{web:googleBigquery}. However, it is not feasible to perform the analysis
-in \S\ref{sec:accuracy:trace} using \textit{bigquery}. Hence we have used only
-2011 trace in our analysis in \S\ref{sec:accuracy:trace}.}
+Also, Google has publicly released two sets of traces, one collected
+in May 2011 and another in May 2019~\cite{googleTraceGithub,
+  googleClusterData2019}.  The traces have information collected over
+a period of 29 (31) days from 1 (8) Borg~\cite{borg} cells for the
+2011 (2019) trace and are released in csv (bigquery) format.  The
+machines are highly heterogeneous; they belong to at least three
+different platforms which use different micro-architectures and/or
+memory technologies~\cite{workloadDiversity:atc18}, and according
+to~\cite{googleClusterData2011-2Schema}, the machines in the same
+platform can have substantially different clock rates, memory speed,
+and core counts.  (The trace does not contain actual machine
+properties. Other details can be found
+in~\cite{googleClusterData2011-2Schema, googleClusterData2019}).  As
+mentioned in~\cite{borgTraceAnalysis2019}, Google 2019 trace is very
+large and has 2.8 TiB in compressed form and hence Google made it
+available only via \textit{bigquery}~\cite{web:googleBigquery}. However, it
+is not feasible to perform the analysis in \S\ref{sec:accuracy:trace}
+using \textit{bigquery}.
+\comment{explain why not???}
+Hence we have used only 2011 trace in our
+analysis in \S\ref{sec:accuracy:trace}.}
 
 
 We calculate the variations in task runtimes for each job across time and
