@@ -12,7 +12,7 @@ Additionally, \gs aims to avoid starvation.
 \rm{so that all jobs can continually make progress.}
 
 The scheduling task in \gs is divided into two phases, (1) job runtime estimation
-and (2) efficient and starvation free scheduling of jobs whose runtimes have been
+and (2) efficient and starvation-free scheduling of jobs whose runtimes have been
 estimated. 
 We focus here on the scheduling mechanism 
 and discuss the different job runtime estimators in the following sections.
@@ -37,7 +37,8 @@ and an effective online heuristic is to order the distributed jobs
 based on each job's total size~\cite{aalo:sigcomm15}.
 {In \gs we use} a similar heuristic;
 the jobs are ordered based on their total estimated runtime, \ie $average$ $task$ $runtime$
-$\times$ $number$ $of$ $tasks$ (\textit{impact of the job}).
+$\times$ $number$ $of$ $tasks$.
+% (\textit{impact of the job}).
 
 \paragraph{Starvation avoidance.}
 SJF is known to cause starvation to long jobs. Hence, {in \gs we adopt
