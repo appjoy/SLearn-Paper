@@ -87,8 +87,8 @@ always offered to the job at the head of the queue.}
 \rm{Since \slearn learns job runtimes online by sampling pilot tasks, it
 needs to interact with the scheduler.}
 To seamlessly integrate \slearn
-with \gs, we add a new priority queue called sampling queue, dedicated
-for running sampled tasks.
+with \gs, we need a priority queue, denoted as sampling queue, for scheduling
+sampled tasks.
 
 %   \paragraph{Fast sampling.}
 %   As pointed above that non-sampling tasks of a job keep waiting until all
@@ -97,12 +97,13 @@ for running sampled tasks.
 %   queue as the second highest priority queue.
 
 \paragraph{Fast sampling.}
-One design challenge is how to determine the priority for the sampling queue.
+One design challenge is how to determine the priority for the sampling queue
+w.r.t. the other priority queues.
 On one hand, sampled tasks should be given high priority so that the job
 runtime estimation can finish quickly. On the other hand, the jobs whose
 runtimes have already been estimated should not be further delayed by learning
-new jobs. To incorporate both factors, we assign the sampling queue the second
-highest priority in \gs.
+new jobs. To balance the two factors, we use the second
+highest priority in \gs as the sampling queue.
 
 \paragraph{Handling thin jobs.}
 %\label{sec:design:thin}
@@ -120,7 +121,7 @@ directly in the highest priority queue if its width is under a threshold thinLim
 \paragraph{Basic operations.}
 % Fig.~\ref{fig:design:arch} shows the \slearn architecture.
 Upon arrival of a new job, the cluster manager asynchronously communicates
-information about the job to \gs, which relays the information to \slearn.  If the
+the job's information to \gs, which relays the information to \slearn.  If the
 number of tasks in the job is under thinLimit, \slearn assigns it
 to the highest priority queue; otherwise, the job is assigned to the
 sampling queue, where a subset of its tasks (\textit{pilot tasks}) will be scheduled to run.
@@ -151,16 +152,21 @@ more tasks gives higher estimation accuracy,
 %   sampling more tasks 
 but also consumes more resources early on, which can potentially delay other
 jobs, if the job turns out to be a long job and should have been scheduled to
-run later under SJF. \editaj{We experiment with varying the number of pilot
-tasks to find the one that strikes a good balance between estimation accuracy
-and overhead. Once the number of pilot tasks is fixed, the next step is to pick
-tasks for piloting.}{To address this problem, we use an adaptive algorithm for determining the
-sampling percentage. Figure~\ref{fig:design:AdaptiveSamplingAlgo} shows its pseudocode.}
+run later under SJF.
+n%   \editaj{We experiment with varying the number of pilot
+%   tasks to find the one that strikes a good balance between estimation accuracy
+%   and overhead. Once the number of pilot tasks is fixed, the next step is to pick
+%   tasks for piloting.}
+{To address this problem, we use an adaptive algorithm to determine the
+sampling ratio. Figure~\ref{fig:design:AdaptiveSamplingAlgo} shows the pseudocode.}
 %\addaj{Recall from \S\ref{sec:sampling} that choosing the number of sampling
 %tasks is a tradeoff between prediction accuracy and waiting time overhead due
 %to sampling. }
-In \slearn we assign pilot tasks randomly.
 \input algo
+
+\comment{explain the pseudo code???}
+In \slearn we select pilot tasks for a job randomly.
+
 
 \paragraph{How to estimate from sampled tasks?}  Several methods such
 as bootstrapping, statistical mean or median can be used to predict job
